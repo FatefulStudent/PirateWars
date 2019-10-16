@@ -40,11 +40,15 @@ void ACannon::Tick(float DeltaTime)
 		const FInputAdapter& CurrentInput = Ship->GetCurrentInput();
 		if (CurrentInput.bFire1 && Projectile)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("PREPARING TO FIRE1!!!"))
 			if (UWorld* World = GetWorld())
 			{
 				float CurrentTime = World->GetTimeSeconds();
+				UE_LOG(LogTemp, Warning, TEXT("WAITING CD TO FIRE1!!!"))
 				if (Fire1ReadyTime <= CurrentTime)
 				{
+
+					UE_LOG(LogTemp, Warning, TEXT("FIRE1!!!"))
 					FVector Loc = CannonSprite->GetSocketLocation(MuzzleSocketName);
 					FRotator Rot = CannonDirection->GetComponentRotation();
 

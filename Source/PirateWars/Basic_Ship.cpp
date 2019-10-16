@@ -23,6 +23,7 @@ void FInputAdapter::MoveY(float AxisValue)
 
 void FInputAdapter::Fire1(bool bPressed)
 {
+	UE_LOG(LogTemp, Warning, TEXT("FIRE1_CHANGED"))
 	bFire1 = bPressed;
 }
 

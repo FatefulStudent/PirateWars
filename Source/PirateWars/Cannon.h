@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
 #include "PaperSpriteComponent.h"
 #include "Basic_Ship.h"
 #include "Cannon.generated.h"
