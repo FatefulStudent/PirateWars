@@ -21,6 +21,11 @@ void FInputAdapter::MoveY(float AxisValue)
 	RawMovementInput.Y += AxisValue;
 }
 
+void FInputAdapter::Fire1(bool bPressed)
+{
+	bFire1 = bPressed;
+}
+
 
 // Sets default values
 ABasic_Ship::ABasic_Ship()
@@ -59,6 +64,9 @@ ABasic_Ship::ABasic_Ship()
 	CameraComponent->AspectRatio = 4.0f / 3.0f;
 	CameraComponent->AttachTo(SpringArm, USpringArmComponent::SocketName);
 	CameraComponent->SetWorldRotation(FRotator(-90.0f, -90.0f, 0.0f));
+
+	Cannon = CreateDefaultSubobject<UChildActorComponent>(TEXT("Cannon"));
+	Cannon->AttachTo(ShipDirection);
 
 	// Default values for speed, acceleration and rotation
 	MoveSpeed = 100.0f;
@@ -116,6 +124,10 @@ void ABasic_Ship::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis("MoveX", this, &ABasic_Ship::MoveX);
 	PlayerInputComponent->BindAxis("MoveY", this, &ABasic_Ship::MoveY);
+
+	PlayerInputComponent->BindAction("Fire1", EInputEvent::IE_Pressed, this, &ABasic_Ship::Fire1Pressed);
+	PlayerInputComponent->BindAction("Fire1", EInputEvent::IE_Released, this, &ABasic_Ship::Fire1Released);
+
 }
 
 void ABasic_Ship::MoveX(float AxisValue)
@@ -126,4 +138,14 @@ void ABasic_Ship::MoveX(float AxisValue)
 void ABasic_Ship::MoveY(float AxisValue)
 {
 	InputAdapter.MoveY(AxisValue);
+}
+
+void ABasic_Ship::Fire1Pressed()
+{
+	InputAdapter.Fire1(true);
+}
+
+void ABasic_Ship::Fire1Released()
+{
+	InputAdapter.Fire1(false);
 }

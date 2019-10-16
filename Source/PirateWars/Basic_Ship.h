@@ -18,9 +18,14 @@ public:
 	// Sanitized movement input
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Input Adapter")
 	FVector2D MovementInput;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tank Input")
+	uint32 bFire1 : 1;
+
 	void Sanitize();
 	void MoveX(float AxisValue);
 	void MoveY(float AxisValue);
+	void Fire1(bool bPressed);
 
 private:
 	// Raw data. Game code should never see it
@@ -47,12 +52,17 @@ private:
 	void RotateTheShip(const FRotator& MovementAngle);
 	void MoveTheShip(float DeltaTime);
 
+	void Fire1Pressed();
+	void Fire1Released();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	FORCEINLINE const FInputAdapter& GetCurrentInput() const { return InputAdapter; }
 
 private:
 	// Helpful debug tool - which way is the ship facing?
@@ -75,4 +85,8 @@ protected:
 	// Top speed for our ship going forward. Ship's velocity will be clamped to this magnitude.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
 	float MoveSpeed;
+
+	// The actor used as the turret.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* Cannon;
 };
