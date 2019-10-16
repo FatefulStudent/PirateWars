@@ -1,0 +1,88 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Pawn.h"
+#include "Components/ArrowComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Basic_Ship.generated.h"
+
+USTRUCT(BlueprintType)
+struct FInputAdapter
+{
+	GENERATED_BODY();
+
+public:
+	// Sanitized movement input
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Input Adapter")
+	FVector2D MovementInput;
+	void Sanitize();
+	void MoveX(float AxisValue);
+	void MoveY(float AxisValue);
+
+private:
+	// Raw data. Game code should never see it
+	FVector2D RawMovementInput;
+};
+
+UCLASS(abstract)
+class PIRATEWARS_API ABasic_Ship : public APawn
+{
+	GENERATED_BODY()
+
+public:
+	// Sets default values for this pawn's properties
+	ABasic_Ship();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+private:
+	void MoveX(float AxisValue);
+	void MoveY(float AxisValue);
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+	// Helpful debug tool - which way is the ship facing?
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
+	UArrowComponent* ShipDirection;
+
+	// Sprite for the ship body.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
+	class UPaperSpriteComponent* ShipSprite;
+
+	// Our in-game camera.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* CameraComponent;
+
+	// Current input for our ship. Sanitized in Tick().
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship Input", meta = (AllowPrivateAccess = "true"))
+	FInputAdapter InputAdapter;
+
+protected:
+	// Top speed for our ship going forward. Tank's velocity will be clamped to this magnitude.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
+	float MoveSpeedForward;
+
+	// Top speed for our ship going backward. Tank's velocity will be clamped to this magnitude.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
+	float MoveSpeedBackward;
+
+	// Acceleration for our ship, when player is trying to move or change directions.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
+	float MoveAccel;
+
+	// Turn speed (in degrees) for our ship. Ship will only turn while moving.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
+	float YawSpeed;
+
+};
