@@ -61,11 +61,7 @@ ABasic_Ship::ABasic_Ship()
 	CameraComponent->SetWorldRotation(FRotator(-90.0f, -90.0f, 0.0f));
 
 	// Default values for speed, acceleration and rotation
-	MoveSpeedForward = 100.0f;
-	MoveSpeedBackward = 10.0f;
-
-	MoveAccel = 200.0f;
-	YawSpeed = 180.0f;
+	MoveSpeed = 100.0f;
 }
 
 // Called when the game starts or when spawned
@@ -80,65 +76,38 @@ void ABasic_Ship::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	InputAdapter.Sanitize();
+	MoveAndRotateTheShip(DeltaTime);
+	
+}
 
+// Checks if the ship needs to be moved and if so rotates and moves it
+void ABasic_Ship::MoveAndRotateTheShip(float DeltaTime)
+{
+	FVector DesiredMovementDirection = FVector(InputAdapter.MovementInput.X, InputAdapter.MovementInput.Y, 0.0f);
+	if (!DesiredMovementDirection.IsNearlyZero())
 	{
-		FVector DesiredMovementDirection = FVector(InputAdapter.MovementInput.X, InputAdapter.MovementInput.Y, 0.0f);
-		if (!DesiredMovementDirection.IsNearlyZero())
-		{
-			// Rotate the tank. This process deals with ShipDirection directly, not the actor/RootComponent, because we don't want to affect the camera.
-			FRotator MovementAngle = DesiredMovementDirection.Rotation();
-			float DeltaYaw = UStaticFunctions::FindDeltaAngleDegrees(ShipDirection->GetComponentRotation().Yaw, MovementAngle.Yaw);
-			bool bReverse = false;
-			if (DeltaYaw != 0.0f)
-			{
-				float AdjustedDeltaYaw = DeltaYaw;
-				// If we're trying to go more than 90 degrees away from our current facing, reverse.
-				/*if (AdjustedDeltaYaw < -136.0f)
-				{
-					bReverse = true;
-					AdjustedDeltaYaw += 180.0f;
-					UE_LOG(LogTemp, Warning, TEXT("REVERSE: Anegle = %f"), AdjustedDeltaYaw)
-				}
-				else if (AdjustedDeltaYaw > 136.0f)
-				{
-					bReverse = true;
-					AdjustedDeltaYaw -= 180.0f;
-					UE_LOG(LogTemp, Warning, TEXT("REVERSE: Anegle = %f"), AdjustedDeltaYaw)
-				}*/
-
-				// Adjust toward our desired angle, and stop if we've reached it.
-				float MaxYawThisFrame = YawSpeed * DeltaTime;
-				if (MaxYawThisFrame >= FMath::Abs(AdjustedDeltaYaw))
-				{
-					if (bReverse)
-					{
-						// Move backward. Use a temp variable in case we need MovementAngle to be correct later.
-						FRotator FacingAngle = MovementAngle;
-						FacingAngle.Yaw = MovementAngle.Yaw + 180.0f;
-						ShipDirection->SetWorldRotation(FacingAngle);
-					}
-					else
-					{
-						// Finish, moving forward. Facing and movement are the same angle.
-						ShipDirection->SetWorldRotation(MovementAngle);
-					}
-				}
-				else
-				{
-					// Adjust as far as we can this frame, because we know we can't reach the goal yet.
-					ShipDirection->AddLocalRotation(FRotator(0.0f, FMath::Sign(AdjustedDeltaYaw) * MaxYawThisFrame, 0.0f));
-				}
-			}
-
-			// Move the tank
-			{
-				FVector SpeedVector = ShipDirection->GetForwardVector() * (bReverse ? -1.0f*MoveSpeedBackward : MoveSpeedForward);
-				FVector Pos = GetActorLocation();
-				Pos += SpeedVector * DeltaTime;
-				SetActorLocation(Pos);
-			}
-		}
+		RotateTheShip(DesiredMovementDirection.Rotation());
+		MoveTheShip(DeltaTime);
 	}
+}
+
+// Rotate the ships direction, leaving camera untouched
+void ABasic_Ship::RotateTheShip(const FRotator& MovementAngle)
+{
+	if (MovementAngle.Yaw != ShipDirection->GetComponentRotation().Yaw)
+	{
+		// Turn in one frame
+		ShipDirection->SetWorldRotation(MovementAngle);
+	}
+}
+
+// move the ship in the direction it is facing
+void ABasic_Ship::MoveTheShip(float DeltaTime)
+{
+	FVector SpeedVector = ShipDirection->GetForwardVector() * MoveSpeed;
+	FVector Pos = GetActorLocation();
+	Pos += SpeedVector * DeltaTime;
+	SetActorLocation(Pos);
 }
 
 // Called to bind functionality to input

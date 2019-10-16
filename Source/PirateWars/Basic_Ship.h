@@ -43,6 +43,9 @@ protected:
 private:
 	void MoveX(float AxisValue);
 	void MoveY(float AxisValue);
+	void MoveAndRotateTheShip(float DeltaTime);
+	void RotateTheShip(const FRotator& MovementAngle);
+	void MoveTheShip(float DeltaTime);
 
 public:	
 	// Called every frame
@@ -69,20 +72,7 @@ private:
 	FInputAdapter InputAdapter;
 
 protected:
-	// Top speed for our ship going forward. Tank's velocity will be clamped to this magnitude.
+	// Top speed for our ship going forward. Ship's velocity will be clamped to this magnitude.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
-	float MoveSpeedForward;
-
-	// Top speed for our ship going backward. Tank's velocity will be clamped to this magnitude.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
-	float MoveSpeedBackward;
-
-	// Acceleration for our ship, when player is trying to move or change directions.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
-	float MoveAccel;
-
-	// Turn speed (in degrees) for our ship. Ship will only turn while moving.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
-	float YawSpeed;
-
+	float MoveSpeed;
 };
