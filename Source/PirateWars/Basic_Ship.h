@@ -63,12 +63,16 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	FORCEINLINE const FInputAdapter& GetCurrentInput() const { return InputAdapter; }
+	FORCEINLINE UArrowComponent* GetShipDirection() const { return ShipDirection; }
+	
+	FORCEINLINE FVector GetRootComponentLocation() const { return RootComponent->GetComponentLocation(); }
+	FORCEINLINE FRotator GetRootComponentRotation() const { return RootComponent->GetComponentRotation(); }
+	FORCEINLINE int GetCannonNum() const { return CannonNum; }
 
-private:
 	// Helpful debug tool - which way is the ship facing?
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
 	UArrowComponent* ShipDirection;
-
+private:
 	// Sprite for the ship body.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* ShipSprite;
@@ -86,7 +90,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
 	float MoveSpeed;
 
-	// The actor used as the turret.
+	// Top speed for our ship going forward. Ship's velocity will be clamped to this magnitude.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship")
+	int CannonNum;
+
+	//// The actor used as the turret.
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
+	//UChildActorComponent* Cannon;
+/*
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
-	UChildActorComponent* Cannon;
+	TArray<ACannon*> Artillery;*/
 };

@@ -2,7 +2,7 @@
 
 
 #include "Cannon.h"
-#include "Components/ArrowComponent.h"
+#include "Basic_Ship.h"
 
 const FName ACannon::MuzzleSocketName(TEXT("Muzzle"));
 
@@ -16,54 +16,30 @@ ACannon::ACannon()
 
 	CannonSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("CannonSprite"));
 	CannonSprite->AttachTo(CannonDirection);
-
-	Fire1Cooldown = 1.0f;
 }
 
 // Called when the game starts or when spawned
 void ACannon::BeginPlay()
 {
 	Super::BeginPlay();
-	Ship = Cast<ABasic_Ship>(GetParentComponent()->GetOwner());
-	check(Ship);
 }
 
 // Called every frame
 void ACannon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
 
+void ACannon::Fire(UWorld* World)
+{
 	check(CannonDirection);
-	if (Ship != nullptr)
+	FVector Loc = CannonSprite->GetSocketLocation(MuzzleSocketName);
+	FRotator Rot = CannonDirection->GetComponentRotation();
+
+	if (AActor* NewProjectile = World->SpawnActor(Projectile))
 	{
-		// Handle input.
-		const FInputAdapter& CurrentInput = Ship->GetCurrentInput();
-		if (CurrentInput.bFire1 && Projectile)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("PREPARING TO FIRE1!!!"))
-			if (UWorld* World = GetWorld())
-			{
-				float CurrentTime = World->GetTimeSeconds();
-				UE_LOG(LogTemp, Warning, TEXT("WAITING CD TO FIRE1!!!"))
-				if (Fire1ReadyTime <= CurrentTime)
-				{
-
-					UE_LOG(LogTemp, Warning, TEXT("FIRE1!!!"))
-					FVector Loc = CannonSprite->GetSocketLocation(MuzzleSocketName);
-					FRotator Rot = CannonDirection->GetComponentRotation();
-
-					if (AActor* NewProjectile = World->SpawnActor(Projectile))
-					{
-						NewProjectile->SetActorLocation(Loc);
-						NewProjectile->SetActorRotation(Rot);
-					}
-
-					// Set the cooldown timer.
-					Fire1ReadyTime = CurrentTime + Fire1Cooldown;
-				}
-			}
-		}
+		NewProjectile->SetActorLocation(Loc);
+		NewProjectile->SetActorRotation(Rot);
 	}
-
 }
 

@@ -23,7 +23,6 @@ void FInputAdapter::MoveY(float AxisValue)
 
 void FInputAdapter::Fire1(bool bPressed)
 {
-	UE_LOG(LogTemp, Warning, TEXT("FIRE1_CHANGED"))
 	bFire1 = bPressed;
 }
 
@@ -66,9 +65,7 @@ ABasic_Ship::ABasic_Ship()
 	CameraComponent->AttachTo(SpringArm, USpringArmComponent::SocketName);
 	CameraComponent->SetWorldRotation(FRotator(-90.0f, -90.0f, 0.0f));
 
-	Cannon = CreateDefaultSubobject<UChildActorComponent>(TEXT("Cannon"));
-	Cannon->AttachTo(ShipDirection);
-
+	CannonNum = 2;
 	// Default values for speed, acceleration and rotation
 	MoveSpeed = 100.0f;
 }

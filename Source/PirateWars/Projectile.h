@@ -31,13 +31,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* ProjectileSprite;
 
-	//// Projectile movement component.
-	//UPROPERTY(VisibleAnywhere, Category = "Projectile")
-	//class UProjectileMovementComponent* ProjectileMovementComponent;
-
-	//// Function that initializes the projectile's velocity in the shoot direction.
-	//void FireInDirection(const FVector& ShootDirection);
-
 protected:
 	void Explode();
 	virtual void Explode_Implementation();

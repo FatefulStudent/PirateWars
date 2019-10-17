@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PaperSpriteComponent.h"
-#include "Basic_Ship.h"
+#include "Components/ArrowComponent.h"
 #include "Cannon.generated.h"
 
 UCLASS()
@@ -20,18 +20,26 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+public:
 	// Projectile to spawn when firing.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret")
 	TSubclassOf<AActor> Projectile;
 
-public:	
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	FORCEINLINE UArrowComponent* GetCannonDirection() { return CannonDirection; }
+	FORCEINLINE bool ProjectileIsPresent() { return Projectile; }
 
 	/** The name of the socket at the muzzle - used for spawning missiles. */
 	static const FName MuzzleSocketName;
+
+	// Is this cannon on the left side?
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cannon")
+	bool bIsLeftSide;
+
+	void Fire(UWorld* World);
 
 private:
 	// Helpful debug tool - which way is the cannon facing?
@@ -41,20 +49,4 @@ private:
 	// Sprite for the cannon
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cannon", meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* CannonSprite;
-
-	// Tank that owns this turret.
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cannon", meta = (AllowPrivateAccess = "true"))
-	ABasic_Ship* Ship;
-
-	// Maximum rate at which the turret can turn to aim.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cannon", meta = (AllowPrivateAccess = "true"))
-	float YawSpeed;
-
-	// Time to delay between Fire1 commands.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cannon", meta = (AllowPrivateAccess = "true"))
-	float Fire1Cooldown;
-
-	// If this value is greater than the current game time, Fire1 is ignored because it has been fired too recently.
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cannon", meta = (AllowPrivateAccess = "true"))
-	float Fire1ReadyTime;
 };

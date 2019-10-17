@@ -4,7 +4,6 @@
 
 #include "Projectile.h"
 #include "PaperSpriteComponent.h"
-//#include "GameFramework/ProjectileMovementComponent.h"
 
 
 // Sets default values
@@ -21,11 +20,7 @@ AProjectile::AProjectile()
 	ProjectileSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("CannonSprite"));
 	ProjectileSprite->AttachTo(RootComponent);
 
-	// Use this component to drive this projectile's movement.
-	//ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-	//// ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-	//ProjectileMovementComponent->InitialSpeed = 3000.0f;
-	//ProjectileMovementComponent->MaxSpeed = 3000.0f;
+	Speed = 300.0f;
 }
 
 // Called when the game starts or when spawned
