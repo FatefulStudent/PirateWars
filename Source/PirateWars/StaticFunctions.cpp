@@ -2,6 +2,7 @@
 
 
 #include "StaticFunctions.h"
+#define TOLERANCE 0.0001
 
 /** Find the smallest angle between two headings (in degrees) */
 float UStaticFunctions::FindDeltaAngleDegrees(float A1, float A2)
@@ -35,4 +36,35 @@ bool UStaticFunctions::FindLookAtAngle2D(const FVector2D& Start, const FVector2D
 		return true;
 	}
 	return false;
+}
+
+float UStaticFunctions::FindYByPointAndVectorOfALine(FVector2D CollinearVector, FVector2D OriginPoint, float XCoord)
+{
+	if (abs(CollinearVector.X) < TOLERANCE)
+		return OriginPoint.Y;
+	return (XCoord - OriginPoint.X) / CollinearVector.X * CollinearVector.Y + OriginPoint.Y;
+}
+
+bool UStaticFunctions::TargetedPointIsOnLeftSideOfTheLine(FVector2D CollinearVector, FVector2D OriginPointOfTheLine, FVector2D TargetedPoint)
+{
+	float YCoordOfTheElongatedLine = FindYByPointAndVectorOfALine(CollinearVector, OriginPointOfTheLine, TargetedPoint.X);
+
+	if (TargetedPoint.Y > YCoordOfTheElongatedLine)
+	{
+		if (TargetedPoint.X > OriginPointOfTheLine.X)
+			// forward left
+			return true;
+		else
+			// backward right
+			return false;
+	}
+	else
+	{
+		if (TargetedPoint.X > OriginPointOfTheLine.X)
+			// forward right
+			return true;
+		else
+			// backward left
+			return false;
+	}
 }

@@ -19,6 +19,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Math")
 	static float FindDeltaAngleDegrees(float A1, float A2);
 
+
+	/** Calculate y coordinate of a line, parametrized by collinear vector and origin */
+	UFUNCTION(BlueprintCallable, Category = "Math")
+	static float FindYByPointAndVectorOfALine(FVector2D CollinearVector, FVector2D OriginPoint, float XCoord);
+
+	/** Calculate y coordinate of a line, parametrized by collinear vector and origin */
+	UFUNCTION(BlueprintCallable, Category = "Math")
+	static bool TargetedPointIsOnLeftSideOfTheLine(FVector2D CollinearVector, FVector2D OriginPointOfTheLine, FVector2D TargetedPoint);
+
 	/** Finds the angle between two 2D points. */
 	UFUNCTION(BlueprintPure, Category = "Math|Rotator", meta = (Keywords = "rotation rotate"))
 	static bool FindLookAtAngle2D(const FVector2D& Start, const FVector2D& Target, float& Angle);
