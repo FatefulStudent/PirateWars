@@ -2,6 +2,7 @@
 
 
 #include "Cannon.h"
+#include "Projectile.h"
 #include "StaticFunctions.h"
 
 const FName ACannon::MuzzleSocketName(TEXT("Muzzle"));
@@ -38,7 +39,7 @@ void ACannon::Fire(UWorld* World)
 
 	float RandomYawAddition = UStaticFunctions::GetRandomNormal(0.0f, this->RandomStd);
 	UE_LOG(LogTemp, Warning, TEXT("ADDING %f to YAW"), RandomYawAddition)
-	if (AActor* NewProjectile = World->SpawnActor(Projectile))
+	if (AProjectile* NewProjectile = Cast<AProjectile>(World->SpawnActor(Projectile)))
 	{
 		NewProjectile->SetActorLocation(Loc);
 		NewProjectile->SetActorRotation(Rot.Add(0.0f, RandomYawAddition, 0.0f));

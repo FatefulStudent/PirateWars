@@ -24,7 +24,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
+	//FORCEINLINE ABasic_Ship* GetShipOwner() { return ShipOwner; }
+
 private:
 	// Ship Owner of the Artillery
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))

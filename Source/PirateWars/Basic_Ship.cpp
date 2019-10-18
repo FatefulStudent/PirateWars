@@ -37,6 +37,7 @@ ABasic_Ship::ABasic_Ship()
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ShipBase"));
 	}
+	RootComponent->SetWorldRotation(FRotator(0.0f, -90.0f, 0.0f));
 
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
@@ -45,25 +46,7 @@ ABasic_Ship::ABasic_Ship()
 
 	ShipSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("ShipSprite"));
 	ShipSprite->SetupAttachment(ShipDirection);
-
-	USpringArmComponent* SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArm->TargetArmLength = 500.0f;
-	SpringArm->CameraLagSpeed = 2.0f;
-	SpringArm->bDoCollisionTest = false;
-	SpringArm->bEnableCameraLag = true;
-	SpringArm->bEnableCameraRotationLag = false;
-	SpringArm->bUsePawnControlRotation = false;
-	SpringArm->bDoCollisionTest = false;
-	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->SetWorldRotation(FRotator(-90.0f, 0.0f, 0.0f));
-
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	CameraComponent->bUsePawnControlRotation = false;
-	CameraComponent->ProjectionMode = ECameraProjectionMode::Orthographic;
-	CameraComponent->OrthoWidth = 1024.0f;
-	CameraComponent->AspectRatio = 4.0f / 3.0f;
-	CameraComponent->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
-	CameraComponent->SetWorldRotation(FRotator(-90.0f, -90.0f, 0.0f));
+	ShipSprite->SetWorldRotation(FRotator(0.0f, 90.0f, 90.0f));
 
 	// Default values for speed
 	MoveSpeed = 100.0f;
@@ -112,19 +95,19 @@ void ABasic_Ship::MoveTheShip(float DeltaTime)
 	FVector SpeedVector = ShipDirection->GetForwardVector() * MoveSpeed;
 	FVector Pos = GetActorLocation();
 	Pos += SpeedVector * DeltaTime;
-	SetActorLocation(Pos);
+	FHitResult* OutHitRes = nullptr;
+	SetActorLocation(Pos, true, OutHitRes);
+	if (OutHitRes != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("WE HIT SOMETHING!!"))
+	}
+		
 }
 
 // Called to bind functionality to input
 void ABasic_Ship::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAxis("MoveX", this, &ABasic_Ship::MoveX);
-	PlayerInputComponent->BindAxis("MoveY", this, &ABasic_Ship::MoveY);
-
-	PlayerInputComponent->BindAction("Fire1", EInputEvent::IE_Pressed, this, &ABasic_Ship::Fire1Pressed);
-	PlayerInputComponent->BindAction("Fire1", EInputEvent::IE_Released, this, &ABasic_Ship::Fire1Released);
-
 }
 
 void ABasic_Ship::MoveX(float AxisValue)

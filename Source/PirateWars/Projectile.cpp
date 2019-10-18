@@ -20,6 +20,7 @@ AProjectile::AProjectile()
 	ProjectileSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("CannonSprite"));
 	ProjectileSprite->SetupAttachment(RootComponent);
 
+	Radius = 6.0f;
 	Speed = 300.0f;
 }
 
@@ -36,8 +37,25 @@ void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	FVector Loc = GetActorLocation();
-	Loc += (DeltaTime * Speed) * GetTransform().GetUnitAxis(EAxis::X);
-	SetActorLocation(Loc);
+	FVector DesiredLoc = Loc + (DeltaTime * Speed) * GetTransform().GetUnitAxis(EAxis::X);
+	
+	if (UWorld* World = GetWorld())
+	{
+		FHitResult OutHit;
+		FCollisionShape CollisionShape;
+		CollisionShape.SetCapsule(Radius, 200.0f);
+		if (World->SweepSingleByProfile(OutHit, Loc, DesiredLoc, FQuat::Identity, MovementCollisionProfile, CollisionShape))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PROJECTILE HIT %s"), *(OutHit.Actor.Get()->GetName()))
+			SetActorLocation(OutHit.Location);
+			Explode();
+		}
+		else
+		{
+			SetActorLocation(DesiredLoc);
+		}
+	}
+	
 }
 
 void AProjectile::Explode()

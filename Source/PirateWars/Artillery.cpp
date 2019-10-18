@@ -48,25 +48,23 @@ void UArtillery::CreateArtillery()
 			DeltaBetweenCannons = (maxHeight - minHeight) / (CannonNum - 1);
 			
 		// Iterating from left to right side
-		for (int sides = 0; sides < 2; sides++)
+		for (int bLeftSide = 0; bLeftSide < 2; bLeftSide++)
 		{
 			// Creating CannonNum cannons on each side
 			for (int i = 0; i < CannonNum; i++)
 			{
 				// Calculating appropriate location
-				float XDelta = (sides ? -1.0f * fixedWidth : fixedWidth);
+				float XDelta = (bLeftSide ? -1.0f * fixedWidth : fixedWidth);
 				float YDelta = minHeight + i * DeltaBetweenCannons;
 				FVector NewLoc = Loc + FVector(YDelta, XDelta, -2.0f);
 
 				FRotator NewRot = Rot;
-				if (sides == 0)
-					NewRot = NewRot.Add(0.0f, 90.0f, 0.0f);
-				else
-					NewRot = NewRot.Add(0.0f, -90.0f, 0.0f);
-
+				if (bLeftSide == 0)
+					NewRot = NewRot.Add(0.0f, 180.0f, 0.0f);
+				
 				if (ACannon* NewCannon = World->SpawnActor<ACannon>(CannonType, NewLoc, NewRot))
 				{
-					NewCannon->bIsLeftSide = sides;
+					NewCannon->bIsLeftSide = bLeftSide;
 					NewCannon->RandomStd = RandomStd;
 					NewCannon->AttachToComponent(ShipOwner->GetShipDirectionArrow(), FAttachmentTransformRules::KeepRelativeTransform);
 					CannonArr.Add(NewCannon);
