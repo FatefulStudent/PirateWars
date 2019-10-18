@@ -18,7 +18,7 @@ AProjectile::AProjectile()
 	}
 
 	ProjectileSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("CannonSprite"));
-	ProjectileSprite->AttachTo(RootComponent);
+	ProjectileSprite->SetupAttachment(RootComponent);
 
 	Speed = 300.0f;
 }

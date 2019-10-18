@@ -23,13 +23,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	float Speed;
-
 private:
 	// Sprite for the Cannon Ball
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* ProjectileSprite;
+
+	// Speed of the projectile
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
+	float Speed;
 
 protected:
 	void Explode();

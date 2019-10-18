@@ -25,12 +25,13 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
+private:
 	// Ship Owner of the Artillery
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
 	class ABasic_Ship* ShipOwner;
 
 	// Projectile to spawn when firing.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CannonType")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AActor> CannonType;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
@@ -44,7 +45,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
 	float Fire1ReadyTime;
 
-private:
 	// Number of cannons for each side
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
 	int CannonNum;

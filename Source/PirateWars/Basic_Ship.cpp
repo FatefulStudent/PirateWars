@@ -41,10 +41,10 @@ ABasic_Ship::ABasic_Ship()
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	ShipDirection = CreateDefaultSubobject<UArrowComponent>(TEXT("ShipDirection"));
-	ShipDirection->AttachTo(RootComponent);
+	ShipDirection->SetupAttachment(RootComponent);
 
 	ShipSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("ShipSprite"));
-	ShipSprite->AttachTo(ShipDirection);
+	ShipSprite->SetupAttachment(ShipDirection);
 
 	USpringArmComponent* SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->TargetArmLength = 500.0f;
@@ -54,7 +54,7 @@ ABasic_Ship::ABasic_Ship()
 	SpringArm->bEnableCameraRotationLag = false;
 	SpringArm->bUsePawnControlRotation = false;
 	SpringArm->bDoCollisionTest = false;
-	SpringArm->AttachTo(RootComponent);
+	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->SetWorldRotation(FRotator(-90.0f, 0.0f, 0.0f));
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -62,7 +62,7 @@ ABasic_Ship::ABasic_Ship()
 	CameraComponent->ProjectionMode = ECameraProjectionMode::Orthographic;
 	CameraComponent->OrthoWidth = 1024.0f;
 	CameraComponent->AspectRatio = 4.0f / 3.0f;
-	CameraComponent->AttachTo(SpringArm, USpringArmComponent::SocketName);
+	CameraComponent->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	CameraComponent->SetWorldRotation(FRotator(-90.0f, -90.0f, 0.0f));
 
 	// Default values for speed

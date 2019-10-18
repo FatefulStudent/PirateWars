@@ -21,27 +21,24 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	// Projectile to spawn when firing.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret")
-	TSubclassOf<AActor> Projectile;
-
-
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Is this cannon on the left side?
+	bool bIsLeftSide;
+
+	// Spread when shooting
+	float RandomStd;
+
 	FORCEINLINE UArrowComponent* GetCannonDirection() { return CannonDirection; }
 	FORCEINLINE bool ProjectileIsPresent() { return Projectile; }
-
+	
+	void Fire(UWorld* World);
+	
+private:
 	/** The name of the socket at the muzzle - used for spawning missiles. */
 	static const FName MuzzleSocketName;
 
-	// Is this cannon on the left side?
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cannon")
-	bool bIsLeftSide;
-
-	void Fire(UWorld* World, float RandomStd = 1);
-
-private:
 	// Helpful debug tool - which way is the cannon facing?
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cannon", meta = (AllowPrivateAccess = "true"))
 	class UArrowComponent* CannonDirection;
@@ -49,4 +46,8 @@ private:
 	// Sprite for the cannon
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cannon", meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* CannonSprite;
+
+	// Projectile to spawn when firing.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cannon", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AActor> Projectile;
 };

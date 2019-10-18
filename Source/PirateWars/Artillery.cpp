@@ -67,6 +67,7 @@ void UArtillery::CreateArtillery()
 				if (ACannon* NewCannon = World->SpawnActor<ACannon>(CannonType, NewLoc, NewRot))
 				{
 					NewCannon->bIsLeftSide = sides;
+					NewCannon->RandomStd = RandomStd;
 					NewCannon->AttachToComponent(ShipOwner->GetShipDirectionArrow(), FAttachmentTransformRules::KeepRelativeTransform);
 					CannonArr.Add(NewCannon);
 				}
@@ -108,7 +109,7 @@ void UArtillery::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 							for (int i = 0; i < CannonArr.Num(); i++)
 							{
 								if (CannonArr[i]->bIsLeftSide == bFireLeftSide)
-									CannonArr[i]->Fire(World, RandomStd);
+									CannonArr[i]->Fire(World);
 							}
 							// Set the cooldown timer.
 							Fire1ReadyTime = CurrentTime + Fire1Cooldown;
