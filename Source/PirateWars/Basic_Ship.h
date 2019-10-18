@@ -72,7 +72,8 @@ public:
 	// Helpful debug tool - which way is the ship facing?
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
 	UArrowComponent* ShipDirection;
-private:
+
+protected:
 	// Sprite for the ship body.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* ShipSprite;
@@ -85,7 +86,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship Input", meta = (AllowPrivateAccess = "true"))
 	FInputAdapter InputAdapter;
 
-protected:
 	// Top speed for our ship going forward. Ship's velocity will be clamped to this magnitude.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
 	float MoveSpeed;
