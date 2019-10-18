@@ -2,6 +2,7 @@
 
 
 #include "StaticFunctions.h"
+#include "Kismet/KismetMathLibrary.h"
 #define TOLERANCE 0.0001
 
 /** Find the smallest angle between two headings (in degrees) */
@@ -38,33 +39,32 @@ bool UStaticFunctions::FindLookAtAngle2D(const FVector2D& Start, const FVector2D
 	return false;
 }
 
-float UStaticFunctions::FindYByPointAndVectorOfALine(FVector2D CollinearVector, FVector2D OriginPoint, float XCoord)
+float UStaticFunctions::FindYIntersectBySlopeAndPointOfLine(float SlopeAngle, FVector2D OriginPoint)
 {
-	if (abs(CollinearVector.X) < TOLERANCE)
-		return OriginPoint.Y;
-	return (XCoord - OriginPoint.X) / CollinearVector.X * CollinearVector.Y + OriginPoint.Y;
+	return -OriginPoint.X * FMath::Tan(FMath::DegreesToRadians(SlopeAngle)) + OriginPoint.Y;
 }
 
-bool UStaticFunctions::TargetedPointIsOnLeftSideOfTheLine(FVector2D CollinearVector, FVector2D OriginPointOfTheLine, FVector2D TargetedPoint)
+float UStaticFunctions::PseudoScalarMultiplication(FVector2D OriginalVector, FVector2D TargetedVector)
 {
-	float YCoordOfTheElongatedLine = FindYByPointAndVectorOfALine(CollinearVector, OriginPointOfTheLine, TargetedPoint.X);
+	return OriginalVector.X*TargetedVector.Y - OriginalVector.Y*TargetedVector.X;
+}
 
-	if (TargetedPoint.Y > YCoordOfTheElongatedLine)
+bool UStaticFunctions::TargetedPointIsOnLeftSideOfTheLine(float SlopeAngle, FVector2D OriginPointOfTheLine, FVector2D TargetedPoint)
+{
+	if (abs(SlopeAngle - 90) < TOLERANCE)
 	{
-		if (TargetedPoint.X > OriginPointOfTheLine.X)
-			// forward left
-			return true;
-		else
-			// backward right
-			return false;
+		UE_LOG(LogTemp, Warning, TEXT("EDGE CASE 1"))
+		return TargetedPoint.X > OriginPointOfTheLine.X;
 	}
-	else
+	else if (abs(SlopeAngle + 90) < TOLERANCE)
 	{
-		if (TargetedPoint.X > OriginPointOfTheLine.X)
-			// forward right
-			return true;
-		else
-			// backward left
-			return false;
+		UE_LOG(LogTemp, Warning, TEXT("EDGE CASE 2"))
+		return TargetedPoint.X < OriginPointOfTheLine.X;
 	}
+
+	float YIntersect = FindYIntersectBySlopeAndPointOfLine(SlopeAngle, OriginPointOfTheLine);
+	FVector2D OriginalVector = FVector2D(OriginPointOfTheLine.X - 0, OriginPointOfTheLine.Y - YIntersect);
+	FVector2D TargetedVector = FVector2D(TargetedPoint.X - 0, TargetedPoint.Y - YIntersect);
+	float PseudoMiltiplicationRes = PseudoScalarMultiplication(OriginalVector, TargetedVector);
+	return (abs(SlopeAngle) > 90 ? PseudoMiltiplicationRes > 0 : PseudoScalarMultiplication(OriginalVector, TargetedVector) < 0);
 }

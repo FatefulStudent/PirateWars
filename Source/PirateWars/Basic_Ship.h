@@ -63,7 +63,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	FORCEINLINE const FInputAdapter& GetCurrentInput() const { return InputAdapter; }
-	FORCEINLINE UArrowComponent* GetShipDirection() const { return ShipDirection; }
+	FORCEINLINE UArrowComponent* GetShipDirectionArrow() const { return ShipDirection; }
+	FORCEINLINE float GetShipYaw() const { return ShipDirection->GetComponentRotation().Yaw; }
 	
 	FORCEINLINE FVector GetRootComponentLocation() const { return RootComponent->GetComponentLocation(); }
 	FORCEINLINE FRotator GetRootComponentRotation() const { return RootComponent->GetComponentRotation(); }

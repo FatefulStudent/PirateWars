@@ -22,11 +22,16 @@ public:
 
 	/** Calculate y coordinate of a line, parametrized by collinear vector and origin */
 	UFUNCTION(BlueprintCallable, Category = "Math")
-	static float FindYByPointAndVectorOfALine(FVector2D CollinearVector, FVector2D OriginPoint, float XCoord);
+	static float FindYIntersectBySlopeAndPointOfLine(float SlopeAngle, FVector2D OriginPoint);
+	
+	/** Calculate y coordinate of a line, parametrized by collinear vector and origin */
+	UFUNCTION(BlueprintCallable, Category = "Math")
+	static float PseudoScalarMultiplication(FVector2D OriginalVector, FVector2D TargetedVector);
+
 
 	/** Calculate y coordinate of a line, parametrized by collinear vector and origin */
 	UFUNCTION(BlueprintCallable, Category = "Math")
-	static bool TargetedPointIsOnLeftSideOfTheLine(FVector2D CollinearVector, FVector2D OriginPointOfTheLine, FVector2D TargetedPoint);
+	static bool TargetedPointIsOnLeftSideOfTheLine(float SlopeAngle, FVector2D OriginPointOfTheLine, FVector2D TargetedPoint);
 
 	/** Finds the angle between two 2D points. */
 	UFUNCTION(BlueprintPure, Category = "Math|Rotator", meta = (Keywords = "rotation rotate"))

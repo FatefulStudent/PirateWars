@@ -3,6 +3,8 @@
 
 #include "Artillery.h"
 #include "Basic_Ship.h"
+#include "Kismet/GameplayStatics.h"
+#include "StaticFunctions.h"
 #include "Engine/EngineTypes.h"
 
 // Sets default values for this component's properties
@@ -47,20 +49,20 @@ void UArtillery::CreateArtillery()
 			// Artillery
 			for (int i = 0; i < ShipOwner->GetCannonNum(); i++)
 			{
-				float XDelta = (sides ? fixedWidth : -1.0f * fixedWidth);
+				float XDelta = (sides ? -1.0f * fixedWidth : fixedWidth);
 				float YDelta = minHeight + i * DeltaBetweenCannons;
 				FVector NewLoc = Loc + FVector(YDelta, XDelta, -2.0f);
 
 				FRotator NewRot = Rot;
 				if (sides == 0)
-					NewRot = NewRot.Add(0.0f, -90.0f, 0.0f);
-				else
 					NewRot = NewRot.Add(0.0f, 90.0f, 0.0f);
+				else
+					NewRot = NewRot.Add(0.0f, -90.0f, 0.0f);
 
 				if (ACannon* NewCannon = World->SpawnActor<ACannon>(CannonType, NewLoc, NewRot))
 				{
 					NewCannon->bIsLeftSide = sides;
-					NewCannon->AttachToComponent(ShipOwner->GetShipDirection(), FAttachmentTransformRules::KeepRelativeTransform);
+					NewCannon->AttachToComponent(ShipOwner->GetShipDirectionArrow(), FAttachmentTransformRules::KeepRelativeTransform);
 					CannonArr.Add(NewCannon);
 				}
 			}
@@ -81,19 +83,37 @@ void UArtillery::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	{
 		// Handle input.
 		const FInputAdapter& CurrentInput = ShipOwner->GetCurrentInput();
-		if (CurrentInput.bFire1 && CannonArr[0]->ProjectileIsPresent())
+		
+		if (CurrentInput.bFire1 && CannonArr.Num() != 0 && CannonArr[0]->ProjectileIsPresent())
 		{
 			if (UWorld* World = GetWorld())
 			{
 				float CurrentTime = World->GetTimeSeconds();
 				if (Fire1ReadyTime <= CurrentTime)
 				{
-					for (int i = 0; i < CannonArr.Num(); i++)
+					if (APlayerController* PC = Cast<APlayerController>(ShipOwner->GetController()))
 					{
-						CannonArr[i]->Fire(World);
+						FVector2D AimLocation;
+						if (PC->GetMousePosition(AimLocation.X, AimLocation.Y))
+						{
+							FVector2D ArtilleryLocation = FVector2D::ZeroVector;
+							UGameplayStatics::ProjectWorldToScreen(PC, GetComponentLocation(), ArtilleryLocation);
+							UE_LOG(LogTemp, Warning, TEXT("YAW:%f, ArtilleryLoc: (%f, %f), AimLoc (%f, %f)"), ShipOwner->GetShipYaw(), ArtilleryLocation.X, ArtilleryLocation.Y, AimLocation.X, AimLocation.Y)
+							bool bFireLeftSide = UStaticFunctions::TargetedPointIsOnLeftSideOfTheLine(ShipOwner->GetShipYaw(), ArtilleryLocation, AimLocation);
+							if (bFireLeftSide)
+								UE_LOG(LogTemp, Warning, TEXT("FIRING LEFT!"))
+							else
+								UE_LOG(LogTemp, Warning, TEXT("FIRING RIGHT!"))
+							for (int i = 0; i < CannonArr.Num(); i++)
+							{
+								if (CannonArr[i]->bIsLeftSide == bFireLeftSide)
+									CannonArr[i]->Fire(World);
+							}
+							// Set the cooldown timer.
+							Fire1ReadyTime = CurrentTime + Fire1Cooldown;
+						}
 					}
-					// Set the cooldown timer.
-					Fire1ReadyTime = CurrentTime + Fire1Cooldown;
+					
 				}
 			}
 		}
