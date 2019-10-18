@@ -68,7 +68,6 @@ public:
 	
 	FORCEINLINE FVector GetRootComponentLocation() const { return RootComponent->GetComponentLocation(); }
 	FORCEINLINE FRotator GetRootComponentRotation() const { return RootComponent->GetComponentRotation(); }
-	FORCEINLINE int GetCannonNum() const { return CannonNum; }
 
 	// Helpful debug tool - which way is the ship facing?
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
@@ -90,15 +89,4 @@ protected:
 	// Top speed for our ship going forward. Ship's velocity will be clamped to this magnitude.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
 	float MoveSpeed;
-
-	// Top speed for our ship going forward. Ship's velocity will be clamped to this magnitude.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship")
-	int CannonNum;
-
-	//// The actor used as the turret.
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
-	//UChildActorComponent* Cannon;
-/*
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
-	TArray<ACannon*> Artillery;*/
 };

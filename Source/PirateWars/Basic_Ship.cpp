@@ -65,8 +65,7 @@ ABasic_Ship::ABasic_Ship()
 	CameraComponent->AttachTo(SpringArm, USpringArmComponent::SocketName);
 	CameraComponent->SetWorldRotation(FRotator(-90.0f, -90.0f, 0.0f));
 
-	CannonNum = 2;
-	// Default values for speed, acceleration and rotation
+	// Default values for speed
 	MoveSpeed = 100.0f;
 }
 

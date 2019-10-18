@@ -3,6 +3,8 @@
 
 #include "StaticFunctions.h"
 #include "Kismet/KismetMathLibrary.h"
+#include <random>
+
 #define TOLERANCE 0.0001
 
 /** Find the smallest angle between two headings (in degrees) */
@@ -67,4 +69,14 @@ bool UStaticFunctions::TargetedPointIsOnLeftSideOfTheLine(float SlopeAngle, FVec
 	FVector2D TargetedVector = FVector2D(TargetedPoint.X - 0, TargetedPoint.Y - YIntersect);
 	float PseudoMiltiplicationRes = PseudoScalarMultiplication(OriginalVector, TargetedVector);
 	return (abs(SlopeAngle) > 90 ? PseudoMiltiplicationRes > 0 : PseudoScalarMultiplication(OriginalVector, TargetedVector) < 0);
+}
+
+
+float UStaticFunctions::GetRandomNormal(float loc, float scale)
+{
+	std::random_device rd{};
+	std::mt19937 gen{ rd() };
+	std::normal_distribution<float> d{ loc, scale };
+
+	return d(gen);
 }

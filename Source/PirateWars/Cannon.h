@@ -39,7 +39,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cannon")
 	bool bIsLeftSide;
 
-	void Fire(UWorld* World);
+	void Fire(UWorld* World, float RandomStd = 1);
 
 private:
 	// Helpful debug tool - which way is the cannon facing?

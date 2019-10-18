@@ -2,7 +2,7 @@
 
 
 #include "Cannon.h"
-#include "Basic_Ship.h"
+#include "StaticFunctions.h"
 
 const FName ACannon::MuzzleSocketName(TEXT("Muzzle"));
 
@@ -30,16 +30,19 @@ void ACannon::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ACannon::Fire(UWorld* World)
+void ACannon::Fire(UWorld* World, float RandomStd)
 {
 	check(CannonDirection);
 	FVector Loc = CannonSprite->GetSocketLocation(MuzzleSocketName);
 	FRotator Rot = CannonDirection->GetComponentRotation();
 
+	
+	float RandomYawAddition = UStaticFunctions::GetRandomNormal(0.0f, RandomStd);
+	UE_LOG(LogTemp, Warning, TEXT("ADDING %f to YAW"), RandomYawAddition)
 	if (AActor* NewProjectile = World->SpawnActor(Projectile))
 	{
 		NewProjectile->SetActorLocation(Loc);
-		NewProjectile->SetActorRotation(Rot);
+		NewProjectile->SetActorRotation(Rot.Add(0.0f, RandomYawAddition, 0.0f));
 	}
 }
 

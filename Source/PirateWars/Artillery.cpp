@@ -14,7 +14,10 @@ UArtillery::UArtillery()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	// Default values for number of cannons and cooldown of guns
+	CannonNum = 5;
 	Fire1Cooldown = 1.0f;
+	RandomStd = 5.0f;
 }
 
 
@@ -31,6 +34,7 @@ void UArtillery::BeginPlay()
 void UArtillery::CreateArtillery()
 {
 	UE_LOG(LogTemp, Warning, TEXT("CREATING ARTILLERY"))
+	// TODO: transfer to properties
 	float maxHeight = 30.0f;
 	float minHeight = -40.0f;
 	float fixedWidth = 15.0f;
@@ -40,15 +44,16 @@ void UArtillery::CreateArtillery()
 		FRotator Rot = ShipOwner->GetRootComponentRotation();
 
 		float DeltaBetweenCannons = 0.0f;
-		if (ShipOwner->GetCannonNum() > 1)
-			DeltaBetweenCannons = (maxHeight - minHeight) / (ShipOwner->GetCannonNum() - 1);
+		if (CannonNum > 1)
+			DeltaBetweenCannons = (maxHeight - minHeight) / (CannonNum - 1);
 			
-
+		// Iterating from left to right side
 		for (int sides = 0; sides < 2; sides++)
 		{
-			// Artillery
-			for (int i = 0; i < ShipOwner->GetCannonNum(); i++)
+			// Creating CannonNum cannons on each side
+			for (int i = 0; i < CannonNum; i++)
 			{
+				// Calculating appropriate location
 				float XDelta = (sides ? -1.0f * fixedWidth : fixedWidth);
 				float YDelta = minHeight + i * DeltaBetweenCannons;
 				FVector NewLoc = Loc + FVector(YDelta, XDelta, -2.0f);
@@ -98,16 +103,12 @@ void UArtillery::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 						{
 							FVector2D ArtilleryLocation = FVector2D::ZeroVector;
 							UGameplayStatics::ProjectWorldToScreen(PC, GetComponentLocation(), ArtilleryLocation);
-							UE_LOG(LogTemp, Warning, TEXT("YAW:%f, ArtilleryLoc: (%f, %f), AimLoc (%f, %f)"), ShipOwner->GetShipYaw(), ArtilleryLocation.X, ArtilleryLocation.Y, AimLocation.X, AimLocation.Y)
 							bool bFireLeftSide = UStaticFunctions::TargetedPointIsOnLeftSideOfTheLine(ShipOwner->GetShipYaw(), ArtilleryLocation, AimLocation);
-							if (bFireLeftSide)
-								UE_LOG(LogTemp, Warning, TEXT("FIRING LEFT!"))
-							else
-								UE_LOG(LogTemp, Warning, TEXT("FIRING RIGHT!"))
+							// Firing all cannons on the appropriate side
 							for (int i = 0; i < CannonArr.Num(); i++)
 							{
 								if (CannonArr[i]->bIsLeftSide == bFireLeftSide)
-									CannonArr[i]->Fire(World);
+									CannonArr[i]->Fire(World, RandomStd);
 							}
 							// Set the cooldown timer.
 							Fire1ReadyTime = CurrentTime + Fire1Cooldown;

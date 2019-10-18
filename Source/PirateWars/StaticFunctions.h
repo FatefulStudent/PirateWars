@@ -20,16 +20,15 @@ public:
 	static float FindDeltaAngleDegrees(float A1, float A2);
 
 
-	/** Calculate y coordinate of a line, parametrized by collinear vector and origin */
+	/** Calculate y coordinate of the intersect with Oy axis with a line, parametrized by slope and origin point */
 	UFUNCTION(BlueprintCallable, Category = "Math")
 	static float FindYIntersectBySlopeAndPointOfLine(float SlopeAngle, FVector2D OriginPoint);
 	
-	/** Calculate y coordinate of a line, parametrized by collinear vector and origin */
+	/** Calculate pseudoscalar product of two vectors */
 	UFUNCTION(BlueprintCallable, Category = "Math")
 	static float PseudoScalarMultiplication(FVector2D OriginalVector, FVector2D TargetedVector);
 
-
-	/** Calculate y coordinate of a line, parametrized by collinear vector and origin */
+	/** Calculate whether the targeted point is on the left of line parametrized by slope and origin */
 	UFUNCTION(BlueprintCallable, Category = "Math")
 	static bool TargetedPointIsOnLeftSideOfTheLine(float SlopeAngle, FVector2D OriginPointOfTheLine, FVector2D TargetedPoint);
 
@@ -37,4 +36,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Math|Rotator", meta = (Keywords = "rotation rotate"))
 	static bool FindLookAtAngle2D(const FVector2D& Start, const FVector2D& Target, float& Angle);
 
+	/** Return normal number with loc and sclae */
+	UFUNCTION(BlueprintPure, Category = "Math", meta = (Keywords = "rotation rotate"))
+	static float GetRandomNormal(float loc = 0, float scale = 10);
 };

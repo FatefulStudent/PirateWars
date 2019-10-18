@@ -37,13 +37,21 @@ public:
 	TArray<ACannon*> CannonArr;
 
 	// Time to delay between Fire1 commands.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cannon", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
 	float Fire1Cooldown;
 
 	// If this value is greater than the current game time, Fire1 is ignored because it has been fired too recently.
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cannon", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
 	float Fire1ReadyTime;
 
 private:
+	// Number of cannons for each side
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
+	int CannonNum;
+
+	// Randomness for cannons
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
+	float RandomStd;
+	
 	void CreateArtillery();
 };
