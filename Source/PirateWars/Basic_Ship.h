@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "Components/ArrowComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "PaperSprite.h"
 #include "Basic_Ship.generated.h"
 
 USTRUCT(BlueprintType)
@@ -69,17 +70,36 @@ public:
 	FORCEINLINE const FInputAdapter& GetCurrentInput() const { return InputAdapter; }
 	FORCEINLINE FVector GetRootComponentLocation() const { return RootComponent->GetComponentLocation(); }
 	FORCEINLINE FRotator GetRootComponentRotation() const { return RootComponent->GetComponentRotation(); }
+	FORCEINLINE int GetHealth() const { return CurrentHealth; }
+
+	UFUNCTION(BlueprintCallable, Category = "Ship")
+	virtual void RecieveDamage(int DamageValue);
+
+	UFUNCTION(BlueprintCallable, Category = "Ship")
+	virtual void Die();
 
 protected:
 	// Sprite for the ship body.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
-	class UPaperSpriteComponent* ShipSprite;
+	class UPaperSpriteComponent* ShipSpriteFull;
+
+	// Sprite for the ship body.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
+	TArray<UPaperSprite*> SpritesForTheShip;
+
+	// Current input for our ship. Sanitized in Tick().
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
+	FInputAdapter InputAdapter;
 
 	// Top speed for our ship going forward. Ship's velocity will be clamped to this magnitude.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
 	float MoveSpeed;
 
-	// Current input for our ship. Sanitized in Tick().
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
-	FInputAdapter InputAdapter;
+	// Max health of the ship
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
+	int MaxHealth;
+
+	// Current health of the ship
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
+	int CurrentHealth;
 };

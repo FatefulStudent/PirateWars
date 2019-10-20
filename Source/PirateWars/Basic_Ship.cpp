@@ -44,11 +44,12 @@ ABasic_Ship::ABasic_Ship()
 	ShipDirection = CreateDefaultSubobject<UArrowComponent>(TEXT("ShipDirection"));
 	ShipDirection->SetupAttachment(RootComponent);
 
-	ShipSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("ShipSprite"));
-	ShipSprite->SetupAttachment(ShipDirection);
-	ShipSprite->SetWorldRotation(FRotator(0.0f, 90.0f, 90.0f));
+	ShipSpriteFull = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("ShipSpriteFull"));
+	ShipSpriteFull->SetupAttachment(ShipDirection);
+	ShipSpriteFull->SetWorldRotation(FRotator(0.0f, 90.0f, 90.0f));
 
 	// Default values for speed
+	MaxHealth = 100;
 	MoveSpeed = 100.0f;
 }
 
@@ -56,6 +57,7 @@ ABasic_Ship::ABasic_Ship()
 void ABasic_Ship::BeginPlay()
 {
 	Super::BeginPlay();	
+	CurrentHealth = MaxHealth;
 }
 
 // Called every frame
@@ -102,6 +104,33 @@ void ABasic_Ship::MoveTheShip(float DeltaTime)
 		UE_LOG(LogTemp, Warning, TEXT("WE HIT SOMETHING!!"))
 	}
 		
+}
+
+// Decrease health by damaging the ship (can be overriden)
+void ABasic_Ship::RecieveDamage(int DamageValue)
+{
+	if (DamageValue >= 0)
+		CurrentHealth -= DamageValue;
+
+	UE_LOG(LogTemp, Warning, TEXT("%s: I WAS HIT FOR %d. Remaining Health: %d"), *(GetName()), DamageValue, CurrentHealth)
+
+	if (CurrentHealth <= 60 && CurrentHealth + DamageValue > 60)
+		ShipSpriteFull->SetSprite(SpritesForTheShip[0]);
+	else if (CurrentHealth <= 30 && CurrentHealth + DamageValue > 30)
+		ShipSpriteFull->SetSprite(SpritesForTheShip[1]);
+	else if (CurrentHealth <= 0 && CurrentHealth + DamageValue > 0)
+	{
+		ShipSpriteFull->SetSprite(SpritesForTheShip[2]);
+		Die();
+	}
+		
+}
+
+// When the health is 0 / below zero
+void ABasic_Ship::Die()
+{
+	
+	//Destroy();
 }
 
 // Called to bind functionality to input

@@ -4,7 +4,7 @@
 
 #include "Projectile.h"
 #include "PaperSpriteComponent.h"
-
+#include "Basic_Ship.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -20,6 +20,7 @@ AProjectile::AProjectile()
 	ProjectileSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("CannonSprite"));
 	ProjectileSprite->SetupAttachment(RootComponent);
 
+	DamageValue = 10;
 	Radius = 6.0f;
 	Speed = 300.0f;
 }
@@ -44,15 +45,17 @@ void AProjectile::Tick(float DeltaTime)
 		FHitResult OutHit;
 		FCollisionShape CollisionShape;
 		CollisionShape.SetCapsule(Radius, 200.0f);
+		SetActorLocation(DesiredLoc);
 		if (World->SweepSingleByProfile(OutHit, Loc, DesiredLoc, FQuat::Identity, MovementCollisionProfile, CollisionShape))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("PROJECTILE HIT %s"), *(OutHit.Actor.Get()->GetName()))
-			SetActorLocation(OutHit.Location);
+			ABasic_Ship* HitShip = Cast<ABasic_Ship>(OutHit.Actor.Get());
+			HitShip->RecieveDamage(DamageValue);
 			Explode();
 		}
 		else
 		{
-			SetActorLocation(DesiredLoc);
+			//SetActorLocation(DesiredLoc);
 		}
 	}
 	
