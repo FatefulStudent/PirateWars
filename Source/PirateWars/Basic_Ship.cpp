@@ -33,36 +33,32 @@ ABasic_Ship::ABasic_Ship()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	if (!RootComponent)
-	{
-		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ShipBase"));
-	}
-	RootComponent->SetWorldRotation(FRotator(0.0f, -90.0f, 0.0f));
+	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
+	RootComponent = BoxCollider;
+	// BoxCollider->SetupAttachment(ShipDirection);
+	BoxCollider->SetWorldRotation(FRotator(0.0f, 0.0f, 0.0f));
+	BoxCollider->SetGenerateOverlapEvents(true);
+	BoxCollider->SetNotifyRigidBodyCollision(true);
+
+	/*RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ShipBase"));
+	RootComponent->SetWorldRotation(FRotator(0.0f, -90.0f, 0.0f));*/
 
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	ShipDirection = CreateDefaultSubobject<UArrowComponent>(TEXT("ShipDirection"));
 	ShipDirection->SetupAttachment(RootComponent);
 
-	
 	MovementCollisionProfile = TEXT("BlockAll");
 
 	ShipSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("ShipSprite"));
 	ShipSprite->SetupAttachment(ShipDirection);
 	ShipSprite->SetWorldRotation(FRotator(0.0f, 90.0f, 90.0f));
 
-	BoxShape = FVector(50.0f, 50.0f, 50.0f);
-
-	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
-	BoxCollider->SetupAttachment(ShipDirection);
-	BoxCollider->SetWorldRotation(FRotator(0.0f, 90.0f, 0.0f));
-	BoxCollider->SetGenerateOverlapEvents(true);
-	BoxCollider->SetNotifyRigidBodyCollision(true);
-
 	// Default values for speed
 	bShipIsDead = 0;
 	MaxHealth = 100;
 	MoveSpeed = 100.0f;
+	BoxShape = FVector(50.0f, 50.0f, 50.0f);
 }
 
 // Called when the game starts or when spawned
@@ -99,25 +95,20 @@ void ABasic_Ship::MoveAndRotateTheShip(float DeltaTime)
 // Rotate the ships direction, leaving camera untouched
 void ABasic_Ship::RotateTheShip(const FRotator& MovementAngle)
 {
-	if (MovementAngle.Yaw != ShipDirection->GetComponentRotation().Yaw)
+	if (MovementAngle.Yaw != RootComponent->GetComponentRotation().Yaw)
 	{
 		// Turn in one frame
-		ShipDirection->SetWorldRotation(MovementAngle);
+		RootComponent->SetWorldRotation(MovementAngle);
 	}
 }
 
 // move the ship in the direction it is facing
 void ABasic_Ship::MoveTheShip(float DeltaTime)
 {
-	FVector SpeedVector = ShipDirection->GetForwardVector() * MoveSpeed;
+	FVector SpeedVector = RootComponent->GetForwardVector() * MoveSpeed;
 	FVector Pos = GetActorLocation();
 	Pos += SpeedVector * DeltaTime;
-	FHitResult* OutHitRes = nullptr;
-	SetActorLocation(Pos, true, OutHitRes);
-	if (OutHitRes != nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("WE HIT SOMETHING!!"))
-	}
+	SetActorLocation(Pos, true);
 		
 }
 
@@ -164,6 +155,11 @@ void ABasic_Ship::Die()
 	UE_LOG(LogTemp, Warning, TEXT("%s: I DIEDED"), *(GetName()))
 	SetActorTickEnabled(false);
 	BoxCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	// Get Out of the way
+	FVector Pos = GetActorLocation();
+	Pos += FVector(0.0f, 0.0f, -2.0f);
+	SetActorLocation(Pos);
 
 	FTimerHandle DummyTimerHandle;
 	GetWorldTimerManager().SetTimer(DummyTimerHandle, this, &ABasic_Ship::Drown, 10.0f);
