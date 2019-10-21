@@ -29,9 +29,4 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-private:
-	// Our in-game camera.
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerShip", meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* CameraComponent;
 };

@@ -6,24 +6,6 @@
 // Sets default values
 APlayersShip::APlayersShip()
 {
-	USpringArmComponent* SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArm->TargetArmLength = 500.0f;
-	SpringArm->CameraLagSpeed = 2.0f;
-	SpringArm->bDoCollisionTest = false;
-	SpringArm->bEnableCameraLag = true;
-	SpringArm->bEnableCameraRotationLag = false;
-	SpringArm->bUsePawnControlRotation = false;
-	SpringArm->bDoCollisionTest = false;
-	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->SetWorldRotation(FRotator(-90.0f, 0.0f, 0.0f));
-
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	CameraComponent->bUsePawnControlRotation = false;
-	CameraComponent->ProjectionMode = ECameraProjectionMode::Orthographic;
-	CameraComponent->OrthoWidth = 1024.0f;
-	CameraComponent->AspectRatio = 4.0f / 3.0f;
-	CameraComponent->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
-	CameraComponent->SetWorldRotation(FRotator(-90.0f, -90.0f, 0.0f));
 }
 
 // Called when the game starts or when spawned
