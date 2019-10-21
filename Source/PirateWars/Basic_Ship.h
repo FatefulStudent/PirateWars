@@ -7,6 +7,7 @@
 #include "Components/ArrowComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "PaperSprite.h"
+#include "Components/BoxComponent.h"
 #include "Basic_Ship.generated.h"
 
 USTRUCT(BlueprintType)
@@ -54,6 +55,8 @@ protected:
 	void Fire1Pressed();
 	void Fire1Released();
 
+	bool bShipIsDead;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -81,11 +84,23 @@ public:
 protected:
 	// Sprite for the ship body.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
-	class UPaperSpriteComponent* ShipSpriteFull;
+	class UPaperSpriteComponent* ShipSprite;
 
-	// Sprite for the ship body.
+	// Array of availible sprites 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
 	TArray<UPaperSprite*> SpritesForTheShip;
+
+	// Box for collision calculations
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* BoxCollider;
+
+	// Box collider shape
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
+	FVector BoxShape;
+
+	// Describes collision behaviour
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
+	FName MovementCollisionProfile;
 
 	// Current input for our ship. Sanitized in Tick().
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
@@ -100,6 +115,8 @@ protected:
 	int MaxHealth;
 
 	// Current health of the ship
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
 	int CurrentHealth;
+
+	
 };

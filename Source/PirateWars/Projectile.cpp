@@ -50,8 +50,16 @@ void AProjectile::Tick(float DeltaTime)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("PROJECTILE HIT %s"), *(OutHit.Actor.Get()->GetName()))
 			ABasic_Ship* HitShip = Cast<ABasic_Ship>(OutHit.Actor.Get());
-			HitShip->RecieveDamage(DamageValue);
-			Explode();
+			if (HitShip != nullptr)
+			{
+				HitShip->RecieveDamage(DamageValue);
+				Explode();
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("IT WAS NOT A SHIP!!1"), *(OutHit.Actor.Get()->GetName()))
+			}
+				
 		}
 		else
 		{

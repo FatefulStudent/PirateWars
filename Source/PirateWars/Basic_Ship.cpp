@@ -44,11 +44,23 @@ ABasic_Ship::ABasic_Ship()
 	ShipDirection = CreateDefaultSubobject<UArrowComponent>(TEXT("ShipDirection"));
 	ShipDirection->SetupAttachment(RootComponent);
 
-	ShipSpriteFull = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("ShipSpriteFull"));
-	ShipSpriteFull->SetupAttachment(ShipDirection);
-	ShipSpriteFull->SetWorldRotation(FRotator(0.0f, 90.0f, 90.0f));
+	
+	MovementCollisionProfile = TEXT("BlockAll");
+
+	ShipSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("ShipSprite"));
+	ShipSprite->SetupAttachment(ShipDirection);
+	ShipSprite->SetWorldRotation(FRotator(0.0f, 90.0f, 90.0f));
+
+	BoxShape = FVector(50.0f, 50.0f, 50.0f);
+
+	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
+	BoxCollider->SetupAttachment(ShipDirection);
+	BoxCollider->SetWorldRotation(FRotator(0.0f, 90.0f, 0.0f));
+	BoxCollider->SetGenerateOverlapEvents(true);
+	BoxCollider->SetNotifyRigidBodyCollision(true);
 
 	// Default values for speed
+	bShipIsDead = 0;
 	MaxHealth = 100;
 	MoveSpeed = 100.0f;
 }
@@ -58,6 +70,9 @@ void ABasic_Ship::BeginPlay()
 {
 	Super::BeginPlay();	
 	CurrentHealth = MaxHealth;
+
+	BoxCollider->SetBoxExtent(BoxShape, true);
+	BoxCollider->SetCollisionProfileName(MovementCollisionProfile);
 }
 
 // Called every frame
@@ -109,27 +124,44 @@ void ABasic_Ship::MoveTheShip(float DeltaTime)
 // Decrease health by damaging the ship (can be overriden)
 void ABasic_Ship::RecieveDamage(int DamageValue)
 {
+	if (bShipIsDead)
+		return;
+
 	if (DamageValue >= 0)
 		CurrentHealth -= DamageValue;
 
 	UE_LOG(LogTemp, Warning, TEXT("%s: I WAS HIT FOR %d. Remaining Health: %d"), *(GetName()), DamageValue, CurrentHealth)
 
-	if (CurrentHealth <= 60 && CurrentHealth + DamageValue > 60)
-		ShipSpriteFull->SetSprite(SpritesForTheShip[0]);
-	else if (CurrentHealth <= 30 && CurrentHealth + DamageValue > 30)
-		ShipSpriteFull->SetSprite(SpritesForTheShip[1]);
-	else if (CurrentHealth <= 0 && CurrentHealth + DamageValue > 0)
+	// Dynamically swap sprites based on hp left
+	if (SpritesForTheShip.Num() > 0)
 	{
-		ShipSpriteFull->SetSprite(SpritesForTheShip[2]);
+		int IntervalsNum = SpritesForTheShip.Num() - 1;
+		float IntervalLength = float(MaxHealth) / float(IntervalsNum);
+		
+		for (int IntervalIndex = IntervalsNum; IntervalIndex > 0; IntervalIndex--)
+		{
+			float ThresholdValue = IntervalLength * (IntervalIndex - 1);
+			if (CurrentHealth <= ThresholdValue && CurrentHealth + DamageValue > ThresholdValue)
+			{
+				ShipSprite->SetSprite(SpritesForTheShip[IntervalsNum - IntervalIndex + 1]);
+				break;
+			}
+				
+		}
+	}
+
+	if (CurrentHealth <= 0 && CurrentHealth + DamageValue > 0)
+	{
+		bShipIsDead = 1;
 		Die();
 	}
-		
 }
 
 // When the health is 0 / below zero
 void ABasic_Ship::Die()
 {
-	
+	UE_LOG(LogTemp, Warning, TEXT("%s: I DIEDED"), *(GetName()))
+	SetActorTickEnabled(false);
 	//Destroy();
 }
 
