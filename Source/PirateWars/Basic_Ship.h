@@ -95,7 +95,7 @@ protected:
 	UBoxComponent* BoxCollider;
 
 	// Box collider shape
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
 	FVector BoxShape;
 
 	// Describes collision behaviour
