@@ -152,17 +152,32 @@ void ABasic_Ship::RecieveDamage(int DamageValue)
 
 	if (CurrentHealth <= 0 && CurrentHealth + DamageValue > 0)
 	{
-		bShipIsDead = 1;
 		Die();
 	}
 }
 
-// When the health is 0 / below zero
+// When the health is 0 / below zero stop ticking of the actor
+// Disable collisions and disappear after some time
 void ABasic_Ship::Die()
 {
+	bShipIsDead = 1;
 	UE_LOG(LogTemp, Warning, TEXT("%s: I DIEDED"), *(GetName()))
 	SetActorTickEnabled(false);
-	//Destroy();
+	BoxCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	FTimerHandle DummyTimerHandle;
+	GetWorldTimerManager().SetTimer(DummyTimerHandle, this, &ABasic_Ship::Drown, 10.0f);
+}
+
+
+void ABasic_Ship::Drown()
+{
+	DrownImplementation();
+}
+
+void ABasic_Ship::DrownImplementation()
+{
+	Destroy();
 }
 
 // Called to bind functionality to input

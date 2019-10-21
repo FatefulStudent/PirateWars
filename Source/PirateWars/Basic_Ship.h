@@ -81,6 +81,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Ship")
 	virtual void Die();
 
+	void Drown();
+	virtual void DrownImplementation();
+
 protected:
 	// Sprite for the ship body.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
