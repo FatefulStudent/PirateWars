@@ -2,9 +2,6 @@
 
 
 #include "Artillery.h"
-#include "Basic_Ship.h"
-#include "Kismet/GameplayStatics.h"
-#include "StaticFunctions.h"
 #include "Engine/EngineTypes.h"
 
 // Sets default values for this component's properties
@@ -26,7 +23,8 @@ void UArtillery::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ShipOwner = Cast<ABasic_Ship>(this->GetAttachmentRootActor());
+	// TODO: if it is not a ship
+	ShipOwner = Cast<AShipInterface>(this->GetAttachmentRootActor());
 	CreateArtillery();
 }
 
@@ -40,8 +38,8 @@ void UArtillery::CreateArtillery()
 	float fixedWidth = 15.0f;
 	if (UWorld* World = GetWorld())
 	{
-		FVector Loc = ShipOwner->GetRootComponentLocation();
-		FRotator Rot = ShipOwner->GetRootComponentRotation();
+		FVector Loc = ShipOwner->GetActorLocation();
+		FRotator Rot = ShipOwner->GetActorRotation();
 
 		float DeltaBetweenCannons = 0.0f;
 		if (CannonNum > 1)
@@ -63,9 +61,6 @@ void UArtillery::CreateArtillery()
 					NewRot = NewRot.Add(0.0f, 180.0f, 0.0f);
 				
 				FActorSpawnParameters SpawnParameters;
-				SpawnParameters.Instigator = ShipOwner;
-				SpawnParameters.Owner = ShipOwner;
-
 				if (ACannon* NewCannon = World->SpawnActor<ACannon>(CannonType, NewLoc, NewRot, SpawnParameters))
 				{
 					NewCannon->bIsLeftSide = bLeftSide;
@@ -87,36 +82,28 @@ void UArtillery::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (ShipOwner != nullptr && ShipOwner->IsAlive() && CannonType)
+	if (ShipOwner != nullptr && ShipOwner->GetDeathStatus() == ALIVE && CannonType)
 	{
 		// Handle input.
-		const FInputAdapter& CurrentInput = ShipOwner->GetCurrentInput();
+		bool bFire1 = ShipOwner->Fire1Enabled();
 		
-		if (CurrentInput.bFire1 && CannonArr.Num() != 0 && CannonArr[0]->ProjectileIsPresent())
+		if (bFire1 && CannonArr.Num() != 0 && CannonArr[0]->ProjectileIsPresent())
 		{
 			if (UWorld* World = GetWorld())
 			{
 				float CurrentTime = World->GetTimeSeconds();
 				if (Fire1ReadyTime <= CurrentTime)
 				{
-					if (APlayerController* PC = Cast<APlayerController>(ShipOwner->GetController()))
+					
+					bool bFireLeftSide = ShipOwner->IsLeftSideFiring();
+					// Firing all cannons on the appropriate side
+					for (int i = 0; i < CannonArr.Num(); i++)
 					{
-						FVector2D AimLocation;
-						if (PC->GetMousePosition(AimLocation.X, AimLocation.Y))
-						{
-							FVector2D ArtilleryLocation = FVector2D::ZeroVector;
-							UGameplayStatics::ProjectWorldToScreen(PC, GetComponentLocation(), ArtilleryLocation);
-							bool bFireLeftSide = UStaticFunctions::TargetedPointIsOnLeftSideOfTheLine(ShipOwner->GetShipYaw(), ArtilleryLocation, AimLocation);
-							// Firing all cannons on the appropriate side
-							for (int i = 0; i < CannonArr.Num(); i++)
-							{
-								if (CannonArr[i]->bIsLeftSide == bFireLeftSide)
-									CannonArr[i]->Fire(World);
-							}
-							// Set the cooldown timer.
-							Fire1ReadyTime = CurrentTime + Fire1Cooldown;
-						}
+						if (CannonArr[i]->bIsLeftSide == bFireLeftSide)
+							CannonArr[i]->Fire(World);
 					}
+					// Set the cooldown timer.
+					Fire1ReadyTime = CurrentTime + Fire1Cooldown;
 					
 				}
 			}

@@ -4,7 +4,7 @@
 
 #include "Projectile.h"
 #include "PaperSpriteComponent.h"
-#include "Basic_Ship.h"
+#include "ShipInterface.h"
 #include "Components/CapsuleComponent.h"
 
 
@@ -25,16 +25,17 @@ AProjectile::AProjectile()
 	DamageValue = 10;
 	Radius = 6.0f;
 	Speed = 300.0f;
+	FlightTime = 1.0f;
 }
 
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		ABasic_Ship* HitShip = Cast<ABasic_Ship>(OtherActor);
+		AShipInterface* HitShip = Cast<AShipInterface>(OtherActor);
 		if (HitShip != nullptr)
 		{
-			HitShip->RecieveDamage(DamageValue);
+			HitShip->ReceiveDamage(DamageValue);
 			Explode();
 		}
 		else
@@ -58,7 +59,7 @@ void AProjectile::BeginPlay()
 	CapsuleCollider->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
 	
 	FTimerHandle DummyTimerHandle;
-	GetWorldTimerManager().SetTimer(DummyTimerHandle, this, &AProjectile::Explode, 1.0f);
+	GetWorldTimerManager().SetTimer(DummyTimerHandle, this, &AProjectile::Explode, FlightTime);
 }
 
 // Called every frame
@@ -71,11 +72,6 @@ void AProjectile::Tick(float DeltaTime)
 }
 
 void AProjectile::Explode()
-{
-	Explode_Implementation();
-}
-
-void AProjectile::Explode_Implementation()
 {
 	Destroy();
 }

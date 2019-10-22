@@ -40,20 +40,17 @@ ABasic_Ship::ABasic_Ship()
 
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	ShipDirection = CreateDefaultSubobject<UArrowComponent>(TEXT("ShipDirection"));
-	ShipDirection->SetupAttachment(RootComponent);
-
 	MovementCollisionProfile = TEXT("BlockAll");
 
 	ShipSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("ShipSprite"));
-	ShipSprite->SetupAttachment(ShipDirection);
+	ShipSprite->SetupAttachment(RootComponent);
 	ShipSprite->SetWorldRotation(FRotator(0.0f, 90.0f, 90.0f));
 
 	// Default values for speed
-	bShipIsAlive = 1;
+	DeathStatus = ALIVE;
 	MaxHealth = 100;
 	MoveSpeed = 100.0f;
-	BoxShape = FVector(50.0f, 50.0f, 50.0f);
+	BoxShape = FVector(45.0f, 20.0f, 100.0f);
 }
 
 // Called when the game starts or when spawned
@@ -109,9 +106,9 @@ void ABasic_Ship::MoveTheShip(float DeltaTime)
 }
 
 // Decrease health by damaging the ship (can be overriden)
-void ABasic_Ship::RecieveDamage(int DamageValue)
+void ABasic_Ship::ReceiveDamage(int DamageValue)
 {
-	if (!bShipIsAlive)
+	if (DeathStatus == DEAD)
 		return;
 
 	if (DamageValue >= 0)
@@ -146,11 +143,10 @@ void ABasic_Ship::RecieveDamage(int DamageValue)
 // Disable collisions and disappear after some time
 void ABasic_Ship::Die()
 {
-	bShipIsAlive = 0;
+	DeathStatus = DEAD;
 	UE_LOG(LogTemp, Warning, TEXT("%s: I DIEDED"), *(GetName()))
 	SetActorTickEnabled(false);
 	BoxCollider->SetCollisionProfileName("BlockAll");
-	//BoxCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	// Get Out of the way
 	FVector Pos = GetActorLocation();
@@ -168,11 +164,12 @@ void ABasic_Ship::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		UE_LOG(LogTemp, Warning, TEXT("%s: we were hit by %s!!"), *(GetName()), *(OtherActor->GetName()))
 		
 		// if we collided with a ship we die
-		if (ABasic_Ship* OtherShip = Cast<ABasic_Ship>(OtherActor))
+		if (AShipInterface* OtherShip = Cast<AShipInterface>(OtherActor))
 		{
-			// If there are ships sprites we set the last one (dead)
-			if (OtherShip->IsAlive())
-				RecieveDamage(10000);
+			UE_LOG(LogTemp, Warning, TEXT("%s: it was a ship"), *(GetName()))
+			DeathStatus = PENDING_KILL;
+
+			ReceiveDamage(99999);
 		}
 	}
 	else
@@ -182,11 +179,6 @@ void ABasic_Ship::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 }
 
 void ABasic_Ship::Drown()
-{
-	DrownImplementation();
-}
-
-void ABasic_Ship::DrownImplementation()
 {
 	Destroy();
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
+#include "ShipInterface.h"
 #include "Cannon.h"
 #include "Artillery.generated.h"
 
@@ -28,8 +29,7 @@ public:
 
 private:
 	// Ship Owner of the Artillery
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
-	class ABasic_Ship* ShipOwner;
+	class AShipInterface* ShipOwner;
 
 	// Projectile to spawn when firing.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))

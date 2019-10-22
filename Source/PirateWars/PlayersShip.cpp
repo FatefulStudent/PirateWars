@@ -2,6 +2,9 @@
 
 
 #include "PlayersShip.h"
+#include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
+#include "StaticFunctions.h"
 
 // Sets default values
 APlayersShip::APlayersShip()
@@ -29,4 +32,25 @@ void APlayersShip::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAction("Fire1", EInputEvent::IE_Pressed, this, &APlayersShip::Fire1Pressed);
 	PlayerInputComponent->BindAction("Fire1", EInputEvent::IE_Released, this, &APlayersShip::Fire1Released);
+}
+
+bool APlayersShip::IsLeftSideFiring()
+{
+	bool bFireLeftSide = false;
+	FVector2D AimLocation(0.0f, 0.0f);
+	if (APlayerController* PC = Cast<APlayerController>(this->GetController()))
+	{
+		if (PC->GetMousePosition(AimLocation.X, AimLocation.Y))
+		{
+			FVector2D ArtilleryLocation = FVector2D::ZeroVector;
+			UGameplayStatics::ProjectWorldToScreen(PC, GetActorLocation(), ArtilleryLocation);
+			FRotator ActorRotation = GetActorRotation();
+			bFireLeftSide = UStaticFunctions::TargetedPointIsOnLeftSideOfTheLine(
+				ActorRotation.Yaw, ArtilleryLocation, AimLocation
+			);
+		}
+	}
+	
+
+	return bFireLeftSide;
 }

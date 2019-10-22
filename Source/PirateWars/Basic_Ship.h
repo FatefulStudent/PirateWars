@@ -5,9 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Components/ArrowComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "PaperSprite.h"
 #include "Components/BoxComponent.h"
+#include "PaperSprite.h"
+#include "ShipInterface.h"
 #include "Basic_Ship.generated.h"
 
 USTRUCT(BlueprintType)
@@ -33,8 +33,9 @@ private:
 	FVector2D RawMovementInput;
 };
 
+
 UCLASS(abstract)
-class PIRATEWARS_API ABasic_Ship : public APawn
+class PIRATEWARS_API ABasic_Ship : public AShipInterface
 {
 	GENERATED_BODY()
 
@@ -46,7 +47,34 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+public:
+	// Whether ship wants to shoot or not
+	FORCEINLINE bool Fire1Enabled() const { return InputAdapter.bFire1; }
+	
+	// Whether ship is alive or pending death
+	FORCEINLINE DEATH_STATUS GetDeathStatus() const { return DeathStatus; }
+
+	// Gets health in procents (for the HUD/UI)
+	UFUNCTION(BlueprintCallable, Category = "Ship")
+	FORCEINLINE float GetHealthPct() const { return (CurrentHealth > 0 ? float(CurrentHealth)/float(MaxHealth) : 0.0f); }
+
+	// Public method to damage the ship
+	UFUNCTION(BlueprintCallable, Category = "Ship")
+	void ReceiveDamage(int DamageValue);
+
+	FORCEINLINE bool IsLeftSideFiring() { return true; }
+
 protected:
+	/*
+	 * FUNCTIONS
+	 */
 	virtual void MoveX(float AxisValue);
 	virtual void MoveY(float AxisValue);
 	void MoveAndRotateTheShip(float DeltaTime);
@@ -55,43 +83,18 @@ protected:
 	void Fire1Pressed();
 	void Fire1Released();
 
-	bool bShipIsAlive;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	// Helpful debug tool - which way is the ship facing?
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
-	UArrowComponent* ShipDirection;
-
-	FORCEINLINE UArrowComponent* GetShipDirectionArrow() const { return ShipDirection; }
-	FORCEINLINE float GetShipYaw() const { return ShipDirection->GetComponentRotation().Yaw; }
-	FORCEINLINE const FInputAdapter& GetCurrentInput() const { return InputAdapter; }
-	FORCEINLINE FVector GetRootComponentLocation() const { return RootComponent->GetComponentLocation(); }
-	FORCEINLINE FRotator GetRootComponentRotation() const { return RootComponent->GetComponentRotation(); }
-	FORCEINLINE int GetHealth() const { return CurrentHealth; }
-	FORCEINLINE bool IsAlive() const { return bShipIsAlive; }
-
-	UFUNCTION(BlueprintCallable, Category = "Ship")
-	FORCEINLINE float GetHealthPct() const { return (CurrentHealth >= 0 ? float(CurrentHealth)/float(MaxHealth) : 0.0f); }
+	virtual void Die();
+	void Drown();
 
 	UFUNCTION(BlueprintCallable, Category = "Ship")
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	UFUNCTION(BlueprintCallable, Category = "Ship")
-	virtual void RecieveDamage(int DamageValue);
 
-	UFUNCTION(BlueprintCallable, Category = "Ship")
-	virtual void Die();
+	/*
+	 * PROPERTIES 
+	 */
+	DEATH_STATUS DeathStatus;
 
-	void Drown();
-	virtual void DrownImplementation();
-
-protected:
 	// Sprite for the ship body.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* ShipSprite;
@@ -127,6 +130,4 @@ protected:
 	// Current health of the ship
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (ClampMin = "0.0"))
 	int CurrentHealth;
-
-	
 };

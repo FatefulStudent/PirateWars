@@ -28,10 +28,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* ProjectileSprite;
 
-	// Root component in form of capsule collider
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
-	class UCapsuleComponent* CapsuleCollider;
-
 	// Speed of the projectile
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	float Speed;
@@ -44,6 +40,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	float DamageValue;
 
+	// Speed of the projectile
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
+	float FlightTime;
+
 	/** Describes what this missile hits. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	FName MovementCollisionProfile;
@@ -54,5 +54,4 @@ protected:
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	void Explode();
-	virtual void Explode_Implementation();
 };
