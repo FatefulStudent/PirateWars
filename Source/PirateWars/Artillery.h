@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
-#include "ShipInterface.h"
+#include "AbstractShip.h"
 #include "Cannon.h"
 #include "Artillery.generated.h"
 
@@ -25,11 +25,10 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	//FORCEINLINE ABasic_Ship* GetShipOwner() { return ShipOwner; }
 
 private:
 	// Ship Owner of the Artillery
-	class AShipInterface* ShipOwner;
+	class AAbstractShip* ShipOwner;
 
 	// Projectile to spawn when firing.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))

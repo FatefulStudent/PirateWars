@@ -3,16 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ShipInterface.generated.h"
+#include "AbstractShip.generated.h"
 
 static enum DEATH_STATUS { ALIVE, PENDING_KILL, DEAD };
 
 UCLASS(abstract)
-class PIRATEWARS_API AShipInterface : public APawn
+class PIRATEWARS_API AAbstractShip : public APawn
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+		// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	// Whether ship wants to shoot or not
 	FORCEINLINE virtual bool Fire1Enabled() const { return true; }
@@ -27,5 +27,5 @@ public:
 	FORCEINLINE virtual void ReceiveDamage(int DamageValue) {}
 
 	// Get Aim Location
-	FORCEINLINE virtual bool IsLeftSideFiring() { return true; }
+	FORCEINLINE virtual bool IsLeftSideFiring() const { return true; }
 };

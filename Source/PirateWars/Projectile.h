@@ -24,9 +24,17 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	// Sprite for the Cannon Ball
+	// Sprite for the Projectile
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* ProjectileSprite;
+
+	// Capsule for collision calculations
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
+	class UCapsuleComponent* CapsuleCollider;
+
+	// Describes what this missile hits
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
+	FName MovementCollisionProfile;
 
 	// Speed of the projectile
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
@@ -43,11 +51,6 @@ private:
 	// Speed of the projectile
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	float FlightTime;
-
-	/** Describes what this missile hits. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
-	FName MovementCollisionProfile;
-
 	
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Projectile")

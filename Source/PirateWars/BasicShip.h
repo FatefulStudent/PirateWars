@@ -7,8 +7,8 @@
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 #include "PaperSprite.h"
-#include "ShipInterface.h"
-#include "Basic_Ship.generated.h"
+#include "AbstractShip.h"
+#include "BasicShip.generated.h"
 
 USTRUCT(BlueprintType)
 struct FInputAdapter
@@ -35,13 +35,13 @@ private:
 
 
 UCLASS(abstract)
-class PIRATEWARS_API ABasic_Ship : public AShipInterface
+class PIRATEWARS_API ABasicShip : public AAbstractShip
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
-	ABasic_Ship();
+	ABasicShip();
 
 protected:
 	// Called when the game starts or when spawned
@@ -56,20 +56,20 @@ public:
 	
 public:
 	// Whether ship wants to shoot or not
-	FORCEINLINE bool Fire1Enabled() const { return InputAdapter.bFire1; }
+	FORCEINLINE bool Fire1Enabled() const override { return InputAdapter.bFire1; }
 	
 	// Whether ship is alive or pending death
-	FORCEINLINE DEATH_STATUS GetDeathStatus() const { return DeathStatus; }
+	FORCEINLINE DEATH_STATUS GetDeathStatus() const override { return DeathStatus; }
 
 	// Gets health in procents (for the HUD/UI)
 	UFUNCTION(BlueprintCallable, Category = "Ship")
-	FORCEINLINE float GetHealthPct() const { return (CurrentHealth > 0 ? float(CurrentHealth)/float(MaxHealth) : 0.0f); }
+	FORCEINLINE float GetHealthPct() const override { return (CurrentHealth > 0 ? float(CurrentHealth)/float(MaxHealth) : 0.0f); }
 
 	// Public method to damage the ship
 	UFUNCTION(BlueprintCallable, Category = "Ship")
-	void ReceiveDamage(int DamageValue);
+	void ReceiveDamage(int DamageValue) override;
 
-	FORCEINLINE bool IsLeftSideFiring() { return true; }
+	FORCEINLINE bool IsLeftSideFiring() const override { return true; }
 
 protected:
 	/*

@@ -4,7 +4,7 @@
 
 #include "Projectile.h"
 #include "PaperSpriteComponent.h"
-#include "ShipInterface.h"
+#include "AbstractShip.h"
 #include "Components/CapsuleComponent.h"
 
 
@@ -32,7 +32,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		AShipInterface* HitShip = Cast<AShipInterface>(OtherActor);
+		AAbstractShip* HitShip = Cast<AAbstractShip>(OtherActor);
 		if (HitShip != nullptr)
 		{
 			HitShip->ReceiveDamage(DamageValue);

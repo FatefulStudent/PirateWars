@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Basic_Ship.h"
+#include "BasicShip.h"
 #include "EnemyShip.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PIRATEWARS_API AEnemyShip : public ABasic_Ship
+class PIRATEWARS_API AEnemyShip : public ABasicShip
 {
 	GENERATED_BODY()
 	

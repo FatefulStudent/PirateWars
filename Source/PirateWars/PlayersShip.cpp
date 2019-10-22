@@ -34,7 +34,7 @@ void APlayersShip::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Fire1", EInputEvent::IE_Released, this, &APlayersShip::Fire1Released);
 }
 
-bool APlayersShip::IsLeftSideFiring()
+bool APlayersShip::IsLeftSideFiring() const
 {
 	bool bFireLeftSide = false;
 	FVector2D AimLocation(0.0f, 0.0f);

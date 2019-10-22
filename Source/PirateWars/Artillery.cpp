@@ -24,7 +24,7 @@ void UArtillery::BeginPlay()
 	Super::BeginPlay();
 
 	// TODO: if it is not a ship
-	ShipOwner = Cast<AShipInterface>(this->GetAttachmentRootActor());
+	ShipOwner = Cast<AAbstractShip>(this->GetAttachmentRootActor());
 	CreateArtillery();
 }
 

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Basic_Ship.h"
+#include "BasicShip.h"
 #include "Camera/CameraComponent.h"
 #include "PlayersShip.generated.h"
 
@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class PIRATEWARS_API APlayersShip : public ABasic_Ship
+class PIRATEWARS_API APlayersShip : public ABasicShip
 {
 	GENERATED_BODY()
 	
@@ -30,5 +30,5 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	bool IsLeftSideFiring() override;
+	bool IsLeftSideFiring() const override;
 };

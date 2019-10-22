@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Basic_Ship.h"
+#include "BasicShip.h"
 #include "StaticFunctions.h"
 #include "PaperSpriteComponent.h"
 
@@ -28,7 +28,7 @@ void FInputAdapter::Fire1(bool bPressed)
 
 
 // Sets default values
-ABasic_Ship::ABasic_Ship()
+ABasicShip::ABasicShip()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -54,7 +54,7 @@ ABasic_Ship::ABasic_Ship()
 }
 
 // Called when the game starts or when spawned
-void ABasic_Ship::BeginPlay()
+void ABasicShip::BeginPlay()
 {
 	Super::BeginPlay();	
 	CurrentHealth = MaxHealth;
@@ -62,11 +62,11 @@ void ABasic_Ship::BeginPlay()
 	BoxCollider->SetBoxExtent(BoxShape, true);
 	BoxCollider->SetCollisionProfileName(MovementCollisionProfile);
 
-	BoxCollider->OnComponentHit.AddDynamic(this, &ABasic_Ship::OnHit);
+	BoxCollider->OnComponentHit.AddDynamic(this, &ABasicShip::OnHit);
 }
 
 // Called every frame
-void ABasic_Ship::Tick(float DeltaTime)
+void ABasicShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
@@ -76,7 +76,7 @@ void ABasic_Ship::Tick(float DeltaTime)
 }
 
 // Checks if the ship needs to be moved and if so rotates and moves it
-void ABasic_Ship::MoveAndRotateTheShip(float DeltaTime)
+void ABasicShip::MoveAndRotateTheShip(float DeltaTime)
 {
 	FVector DesiredMovementDirection = FVector(InputAdapter.MovementInput.X, InputAdapter.MovementInput.Y, 0.0f);
 	if (!DesiredMovementDirection.IsNearlyZero())
@@ -87,7 +87,7 @@ void ABasic_Ship::MoveAndRotateTheShip(float DeltaTime)
 }
 
 // Rotate the ships direction, leaving camera untouched
-void ABasic_Ship::RotateTheShip(const FRotator& MovementAngle)
+void ABasicShip::RotateTheShip(const FRotator& MovementAngle)
 {
 	if (MovementAngle.Yaw != RootComponent->GetComponentRotation().Yaw)
 	{
@@ -97,7 +97,7 @@ void ABasic_Ship::RotateTheShip(const FRotator& MovementAngle)
 }
 
 // move the ship in the direction it is facing
-void ABasic_Ship::MoveTheShip(float DeltaTime)
+void ABasicShip::MoveTheShip(float DeltaTime)
 {
 	FVector SpeedVector = RootComponent->GetForwardVector() * MoveSpeed;
 	FVector Pos = GetActorLocation();
@@ -106,7 +106,7 @@ void ABasic_Ship::MoveTheShip(float DeltaTime)
 }
 
 // Decrease health by damaging the ship (can be overriden)
-void ABasic_Ship::ReceiveDamage(int DamageValue)
+void ABasicShip::ReceiveDamage(int DamageValue)
 {
 	if (DeathStatus == DEAD)
 		return;
@@ -141,7 +141,7 @@ void ABasic_Ship::ReceiveDamage(int DamageValue)
 
 // When the health is 0 / below zero stop ticking of the actor
 // Disable collisions and disappear after some time
-void ABasic_Ship::Die()
+void ABasicShip::Die()
 {
 	DeathStatus = DEAD;
 	UE_LOG(LogTemp, Warning, TEXT("%s: I DIEDED"), *(GetName()))
@@ -154,17 +154,17 @@ void ABasic_Ship::Die()
 	SetActorLocation(Pos);
 
 	FTimerHandle DummyTimerHandle;
-	GetWorldTimerManager().SetTimer(DummyTimerHandle, this, &ABasic_Ship::Drown, 10.0f);
+	GetWorldTimerManager().SetTimer(DummyTimerHandle, this, &ABasicShip::Drown, 10.0f);
 }
 
-void ABasic_Ship::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ABasicShip::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s: we were hit by %s!!"), *(GetName()), *(OtherActor->GetName()))
 		
 		// if we collided with a ship we die
-		if (AShipInterface* OtherShip = Cast<AShipInterface>(OtherActor))
+		if (AAbstractShip* OtherShip = Cast<AAbstractShip>(OtherActor))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%s: it was a ship"), *(GetName()))
 			DeathStatus = PENDING_KILL;
@@ -178,33 +178,33 @@ void ABasic_Ship::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	}
 }
 
-void ABasic_Ship::Drown()
+void ABasicShip::Drown()
 {
 	Destroy();
 }
 
 // Called to bind functionality to input
-void ABasic_Ship::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ABasicShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void ABasic_Ship::MoveX(float AxisValue)
+void ABasicShip::MoveX(float AxisValue)
 {
 	InputAdapter.MoveX(AxisValue);
 }
 
-void ABasic_Ship::MoveY(float AxisValue)
+void ABasicShip::MoveY(float AxisValue)
 {
 	InputAdapter.MoveY(AxisValue);
 }
 
-void ABasic_Ship::Fire1Pressed()
+void ABasicShip::Fire1Pressed()
 {
 	InputAdapter.Fire1(true);
 }
 
-void ABasic_Ship::Fire1Released()
+void ABasicShip::Fire1Released()
 {
 	InputAdapter.Fire1(false);
 }
