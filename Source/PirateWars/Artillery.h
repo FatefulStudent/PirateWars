@@ -54,5 +54,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
 	float RandomStd;
 	
+	UFUNCTION()
 	void CreateArtillery();
+	
+	UFUNCTION()
+	void OnUnregister() override;
 };

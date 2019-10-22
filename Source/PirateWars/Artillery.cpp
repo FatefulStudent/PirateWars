@@ -62,11 +62,15 @@ void UArtillery::CreateArtillery()
 				if (bLeftSide == 0)
 					NewRot = NewRot.Add(0.0f, 180.0f, 0.0f);
 				
-				if (ACannon* NewCannon = World->SpawnActor<ACannon>(CannonType, NewLoc, NewRot))
+				FActorSpawnParameters SpawnParameters;
+				SpawnParameters.Instigator = ShipOwner;
+				SpawnParameters.Owner = ShipOwner;
+
+				if (ACannon* NewCannon = World->SpawnActor<ACannon>(CannonType, NewLoc, NewRot, SpawnParameters))
 				{
 					NewCannon->bIsLeftSide = bLeftSide;
 					NewCannon->RandomStd = RandomStd;
-					NewCannon->AttachToComponent(ShipOwner->GetShipDirectionArrow(), FAttachmentTransformRules::KeepRelativeTransform);
+					NewCannon->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
 					CannonArr.Add(NewCannon);
 				}
 			}
@@ -120,3 +124,13 @@ void UArtillery::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	}
 }
 
+// Clears up after deletion
+void UArtillery::OnUnregister()
+{
+	Super::OnUnregister();
+	
+	for (int i = 0; i < CannonArr.Num(); i++)
+	{
+		CannonArr[i]->Destroy();
+	}
+}

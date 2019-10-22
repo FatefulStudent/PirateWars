@@ -57,7 +57,7 @@ void AProjectile::Tick(float DeltaTime)
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("IT WAS NOT A SHIP!!1"), *(OutHit.Actor.Get()->GetName()))
+				UE_LOG(LogTemp, Warning, TEXT("PROJECTILE HIT %s"), *(OutHit.Actor.Get()->GetName()))
 			}
 				
 		}

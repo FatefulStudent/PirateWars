@@ -69,6 +69,8 @@ void ABasic_Ship::BeginPlay()
 
 	BoxCollider->SetBoxExtent(BoxShape, true);
 	BoxCollider->SetCollisionProfileName(MovementCollisionProfile);
+
+	BoxCollider->OnComponentHit.AddDynamic(this, &ABasic_Ship::OnHit);
 }
 
 // Called every frame
@@ -109,7 +111,6 @@ void ABasic_Ship::MoveTheShip(float DeltaTime)
 	FVector Pos = GetActorLocation();
 	Pos += SpeedVector * DeltaTime;
 	SetActorLocation(Pos, true);
-		
 }
 
 // Decrease health by damaging the ship (can be overriden)
@@ -165,6 +166,26 @@ void ABasic_Ship::Die()
 	GetWorldTimerManager().SetTimer(DummyTimerHandle, this, &ABasic_Ship::Drown, 10.0f);
 }
 
+void ABasic_Ship::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s: we were hit by %s!!"), *(GetName()), *(OtherActor->GetName()))
+		
+		// if we collided with a ship we die
+		if (Cast<ABasic_Ship>(OtherActor))
+		{
+			// If there are ships sprites we set the last one (dead)
+			if (SpritesForTheShip.Num() > 1)
+				ShipSprite->SetSprite(SpritesForTheShip[SpritesForTheShip.Num()-1]);
+			Die();
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("gotta be wind"))
+	}
+}
 
 void ABasic_Ship::Drown()
 {

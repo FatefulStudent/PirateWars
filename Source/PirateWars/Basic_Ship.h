@@ -75,6 +75,8 @@ public:
 	FORCEINLINE FRotator GetRootComponentRotation() const { return RootComponent->GetComponentRotation(); }
 	FORCEINLINE int GetHealth() const { return CurrentHealth; }
 
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
+
 	UFUNCTION(BlueprintCallable, Category = "Ship")
 	virtual void RecieveDamage(int DamageValue);
 
