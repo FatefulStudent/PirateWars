@@ -35,13 +35,8 @@ ABasic_Ship::ABasic_Ship()
 
 	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
 	RootComponent = BoxCollider;
-	// BoxCollider->SetupAttachment(ShipDirection);
-	BoxCollider->SetWorldRotation(FRotator(0.0f, 0.0f, 0.0f));
 	BoxCollider->SetGenerateOverlapEvents(true);
 	BoxCollider->SetNotifyRigidBodyCollision(true);
-
-	/*RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ShipBase"));
-	RootComponent->SetWorldRotation(FRotator(0.0f, -90.0f, 0.0f));*/
 
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
