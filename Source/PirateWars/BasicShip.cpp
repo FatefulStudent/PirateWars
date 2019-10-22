@@ -167,9 +167,12 @@ void ABasicShip::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimit
 		if (AAbstractShip* OtherShip = Cast<AAbstractShip>(OtherActor))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%s: it was a ship"), *(GetName()))
-			DeathStatus = PENDING_KILL;
-
-			ReceiveDamage(99999);
+			if (OtherShip->GetDeathStatus() != DEAD && this->DeathStatus != DEAD)
+			{
+				DeathStatus = PENDING_KILL;
+				UE_LOG(LogTemp, Warning, TEXT("%s: other had status %d"), *(GetName()), OtherShip->GetDeathStatus())
+				ReceiveDamage(99999);
+			}
 		}
 	}
 	else
