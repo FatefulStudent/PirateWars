@@ -55,7 +55,7 @@ protected:
 	void Fire1Pressed();
 	void Fire1Released();
 
-	bool bShipIsDead;
+	bool bShipIsAlive;
 
 public:	
 	// Called every frame
@@ -74,6 +74,10 @@ public:
 	FORCEINLINE FVector GetRootComponentLocation() const { return RootComponent->GetComponentLocation(); }
 	FORCEINLINE FRotator GetRootComponentRotation() const { return RootComponent->GetComponentRotation(); }
 	FORCEINLINE int GetHealth() const { return CurrentHealth; }
+	FORCEINLINE bool IsAlive() const { return bShipIsAlive; }
+
+	UFUNCTION(BlueprintCallable, Category = "Ship")
+	FORCEINLINE float GetHealthPct() const { return (CurrentHealth >= 0 ? float(CurrentHealth)/float(MaxHealth) : 0.0f); }
 
 	UFUNCTION(BlueprintCallable, Category = "Ship")
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

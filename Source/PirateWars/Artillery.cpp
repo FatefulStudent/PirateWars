@@ -87,7 +87,7 @@ void UArtillery::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (ShipOwner != nullptr && CannonType)
+	if (ShipOwner != nullptr && ShipOwner->IsAlive() && CannonType)
 	{
 		// Handle input.
 		const FInputAdapter& CurrentInput = ShipOwner->GetCurrentInput();

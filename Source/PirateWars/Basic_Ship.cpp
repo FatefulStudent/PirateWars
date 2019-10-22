@@ -50,7 +50,7 @@ ABasic_Ship::ABasic_Ship()
 	ShipSprite->SetWorldRotation(FRotator(0.0f, 90.0f, 90.0f));
 
 	// Default values for speed
-	bShipIsDead = 0;
+	bShipIsAlive = 1;
 	MaxHealth = 100;
 	MoveSpeed = 100.0f;
 	BoxShape = FVector(50.0f, 50.0f, 50.0f);
@@ -111,7 +111,7 @@ void ABasic_Ship::MoveTheShip(float DeltaTime)
 // Decrease health by damaging the ship (can be overriden)
 void ABasic_Ship::RecieveDamage(int DamageValue)
 {
-	if (bShipIsDead)
+	if (!bShipIsAlive)
 		return;
 
 	if (DamageValue >= 0)
@@ -131,7 +131,6 @@ void ABasic_Ship::RecieveDamage(int DamageValue)
 			if (CurrentHealth <= ThresholdValue && CurrentHealth + DamageValue > ThresholdValue)
 			{
 				ShipSprite->SetSprite(SpritesForTheShip[IntervalsNum - IntervalIndex + 1]);
-				break;
 			}
 				
 		}
@@ -147,10 +146,11 @@ void ABasic_Ship::RecieveDamage(int DamageValue)
 // Disable collisions and disappear after some time
 void ABasic_Ship::Die()
 {
-	bShipIsDead = 1;
+	bShipIsAlive = 0;
 	UE_LOG(LogTemp, Warning, TEXT("%s: I DIEDED"), *(GetName()))
 	SetActorTickEnabled(false);
-	BoxCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	BoxCollider->SetCollisionProfileName("BlockAll");
+	//BoxCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	// Get Out of the way
 	FVector Pos = GetActorLocation();
@@ -168,12 +168,11 @@ void ABasic_Ship::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		UE_LOG(LogTemp, Warning, TEXT("%s: we were hit by %s!!"), *(GetName()), *(OtherActor->GetName()))
 		
 		// if we collided with a ship we die
-		if (Cast<ABasic_Ship>(OtherActor))
+		if (ABasic_Ship* OtherShip = Cast<ABasic_Ship>(OtherActor))
 		{
 			// If there are ships sprites we set the last one (dead)
-			if (SpritesForTheShip.Num() > 1)
-				ShipSprite->SetSprite(SpritesForTheShip[SpritesForTheShip.Num()-1]);
-			Die();
+			if (OtherShip->IsAlive())
+				RecieveDamage(10000);
 		}
 	}
 	else
