@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
+#include "ArtilleryComponent.h"
 #include "PaperSprite.h"
 #include "AbstractShip.h"
 #include "BasicShip.generated.h"
@@ -94,6 +95,22 @@ protected:
 	 * PROPERTIES 
 	 */
 	DEATH_STATUS DeathStatus;
+
+	// Artillery to shoot with cannons
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
+	UArtilleryComponent* Artillery;
+
+	// Time to delay between Fire1 commands.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
+	float Fire1Cooldown;
+
+	// Number of cannons for each side
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
+	int CannonNum;
+
+	// Randomness for cannons
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
+	float RandomStd;
 
 	// Sprite for the ship body.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))

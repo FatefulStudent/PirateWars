@@ -33,20 +33,26 @@ ABasicShip::ABasicShip()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
 	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
 	RootComponent = BoxCollider;
 	BoxCollider->SetGenerateOverlapEvents(true);
 	BoxCollider->SetNotifyRigidBodyCollision(true);
 
-	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	MovementCollisionProfile = TEXT("BlockAll");
+	Artillery = CreateDefaultSubobject<UArtilleryComponent>(TEXT("Artillery"));
 
 	ShipSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("ShipSprite"));
 	ShipSprite->SetupAttachment(RootComponent);
 	ShipSprite->SetWorldRotation(FRotator(0.0f, 90.0f, 90.0f));
 
-	// Default values for speed
+	// Default values for artillery
+	Fire1Cooldown = 1.0f;
+	CannonNum = 5;
+	RandomStd = 5.0f;
+	
+	// General
+	MovementCollisionProfile = TEXT("BlockAll");
 	DeathStatus = ALIVE;
 	MaxHealth = 100;
 	MoveSpeed = 100.0f;
@@ -58,6 +64,10 @@ void ABasicShip::BeginPlay()
 {
 	Super::BeginPlay();	
 	CurrentHealth = MaxHealth;
+
+	Artillery->SetCannonNum(CannonNum);
+	Artillery->SetRandomStd(RandomStd);
+	Artillery->SetCannonNum(Fire1Cooldown);
 
 	BoxCollider->SetBoxExtent(BoxShape, true);
 	BoxCollider->SetCollisionProfileName(MovementCollisionProfile);
