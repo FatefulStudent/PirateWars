@@ -38,7 +38,6 @@ void ACannon::Fire(UWorld* World)
 	FRotator Rot = CannonDirection->GetComponentRotation();
 
 	float RandomYawAddition = UStaticFunctions::GetRandomNormal(0.0f, this->RandomStd);
-	UE_LOG(LogTemp, Warning, TEXT("ADDING %f to YAW"), RandomYawAddition)
 	if (AProjectile* NewProjectile = Cast<AProjectile>(World->SpawnActor(Projectile)))
 	{
 		NewProjectile->SetActorLocation(Loc);

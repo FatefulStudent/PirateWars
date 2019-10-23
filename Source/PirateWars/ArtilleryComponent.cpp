@@ -37,18 +37,8 @@ void UArtilleryComponent::CreateArtillery()
 	float fixedWidth = 15.0f;
 	if (UWorld* World = GetWorld())
 	{
-		FVector Loc = FVector(0, 0, 0); //ShipOwner->GetActorLocation();
-		FRotator Rot = FRotator(0, 0, 0);// ShipOwner->GetActorRotation();
-
-		/*float alphaAngle = Rot.Yaw;
-		float betaAngle = 90.0f - Rot.Yaw;
-
-		FVector alphaDirectionVector = FVector(FMath::Cos(FMath::DegreesToRadians(alphaAngle)), FMath::Sin(FMath::DegreesToRadians(alphaAngle)), 0.0f);
-		FVector minHeightLoc = minHeight * alphaDirectionVector;
-		FVector maxHeightLoc = maxHeight * alphaDirectionVector;
-
-		FVector betaDirectionVector = FVector(FMath::Cos(FMath::DegreesToRadians(betaAngle)), FMath::Sin(FMath::DegreesToRadians(betaAngle)), 0.0f);
-		FVector fixedWidthVector = fixedWidth * betaDirectionVector;*/
+		FVector Loc = FVector(0, 0, 0);
+		FRotator Rot = FRotator(0, 0, 0);
 
 		float DeltaBetweenCannons = 0.0f;
 		if (CannonNum > 1)

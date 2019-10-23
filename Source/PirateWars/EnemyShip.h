@@ -13,5 +13,9 @@ UCLASS()
 class PIRATEWARS_API AEnemyShip : public ABasicShip
 {
 	GENERATED_BODY()
+
+public:
+	// Whether ship wants to shoot or not
+	FORCEINLINE bool Fire1Enabled() const override { return true; }
 	
 };
