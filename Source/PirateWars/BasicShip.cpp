@@ -182,6 +182,7 @@ void ABasicShip::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimit
 				DeathStatus = PENDING_KILL;
 				UE_LOG(LogTemp, Warning, TEXT("%s: other had status %d"), *(GetName()), OtherShip->GetDeathStatus())
 				ReceiveDamage(99999);
+				OtherShip->ReceiveDamage(99999);
 			}
 		}
 	}
