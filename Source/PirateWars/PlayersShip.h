@@ -30,5 +30,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Gets Cooldown in percents (for the HUD/UI)
+	UFUNCTION(BlueprintCallable, Category = "Ship")
+	FORCEINLINE float GetFire1CooldownPct() const { return Artillery->GetFire1CooldownPct(); }
+
 	bool IsLeftSideFiring() const override;
 };

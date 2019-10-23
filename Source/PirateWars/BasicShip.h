@@ -62,7 +62,7 @@ public:
 	// Whether ship is alive or pending death
 	FORCEINLINE DEATH_STATUS GetDeathStatus() const override { return DeathStatus; }
 
-	// Gets health in procents (for the HUD/UI)
+	// Gets health in percents (for the HUD/UI)
 	UFUNCTION(BlueprintCallable, Category = "Ship")
 	FORCEINLINE float GetHealthPct() const override { return (CurrentHealth > 0 ? float(CurrentHealth)/float(MaxHealth) : 0.0f); }
 
