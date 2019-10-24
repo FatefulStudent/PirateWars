@@ -143,7 +143,7 @@ void ABasicShip::ReceiveDamage(int DamageValue)
 		}
 	}
 
-	if (CurrentHealth <= 0 && CurrentHealth + DamageValue > 0)
+	if (CurrentHealth <= 0)
 	{
 		Die();
 	}
@@ -151,11 +151,11 @@ void ABasicShip::ReceiveDamage(int DamageValue)
 
 // When the health is 0 / below zero stop ticking of the actor
 // Disable collisions and disappear after some time
-void ABasicShip::Die()
+void ABasicShip::Die_Implementation()
 {
 	DeathStatus = DEAD;
 	UE_LOG(LogTemp, Warning, TEXT("%s: I DIEDED"), *(GetName()))
-	//SetActorTickEnabled(false);
+	SetActorTickEnabled(false);
 	BoxCollider->SetCollisionProfileName("BlockAll");
 	
 	// Get Out of the way

@@ -85,7 +85,9 @@ protected:
 	void Fire1Pressed();
 	void Fire1Released();
 
-	virtual void Die();
+	UFUNCTION(BlueprintNativeEvent)
+	void Die();
+	virtual void Die_Implementation();
 	void Drown();
 
 	UFUNCTION(BlueprintCallable, Category = "Ship")
