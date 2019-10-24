@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "AbstractShip.generated.h"
 
-static enum DEATH_STATUS { ALIVE, PENDING_KILL, DEAD };
+UENUM()
+enum DEATH_STATUS { ALIVE, PENDING_KILL, DEAD };
 
 UCLASS(abstract)
 class PIRATEWARS_API AAbstractShip : public APawn

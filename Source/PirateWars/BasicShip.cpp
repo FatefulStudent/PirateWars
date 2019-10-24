@@ -155,7 +155,7 @@ void ABasicShip::Die()
 {
 	DeathStatus = DEAD;
 	UE_LOG(LogTemp, Warning, TEXT("%s: I DIEDED"), *(GetName()))
-	SetActorTickEnabled(false);
+	//SetActorTickEnabled(false);
 	BoxCollider->SetCollisionProfileName("BlockAll");
 	
 	// Get Out of the way

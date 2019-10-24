@@ -60,6 +60,7 @@ public:
 	FORCEINLINE bool Fire1Enabled() const override { return InputAdapter.bFire1; }
 	
 	// Whether ship is alive or pending death
+	UFUNCTION(BlueprintCallable, Category = "Ship")
 	FORCEINLINE DEATH_STATUS GetDeathStatus() const override { return DeathStatus; }
 
 	// Gets health in percents (for the HUD/UI)
