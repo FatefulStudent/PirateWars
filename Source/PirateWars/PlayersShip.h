@@ -32,7 +32,7 @@ public:
 
 	// Gets Cooldown in percents (for the HUD/UI)
 	UFUNCTION(BlueprintCallable, Category = "Ship")
-	FORCEINLINE float GetFire1CooldownPct() const { return Artillery->GetFire1CooldownPct(); }
+	FORCEINLINE float GetFire1CooldownPct() const { return (bIsAlive ? Artillery->GetFire1CooldownPct() : 0.0f); }
 
 	bool IsLeftSideFiring() const override;
 };

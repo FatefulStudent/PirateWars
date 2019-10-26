@@ -44,21 +44,23 @@ void UArtilleryComponent::CreateArtillery()
 		if (CannonNum > 1)
 			DeltaBetweenCannons = (maxHeight - minHeight) / (CannonNum - 1);
 		
+		enum SIDES_ENUM {LEFT, RIGHT};
+		SIDES_ENUM side;
 		// Iterating from left to right side
-		for (int bLeftSide = 0; bLeftSide < 2; bLeftSide++)
+		for (side = LEFT; ; )
 		{
 			// Creating CannonNum cannons on each side
 			for (int i = 0; i < CannonNum; i++)
 			{
 				// Calculating appropriate location
-				float XDelta = (bLeftSide ? -1.0f * fixedWidth: fixedWidth);
+				float XDelta = (side == LEFT ? -1.0f * fixedWidth: fixedWidth);
 				float YDelta = minHeight + i * DeltaBetweenCannons;
 				float ZDelta = -2.0f;
 
 				FVector NewLoc = FVector(YDelta, XDelta, ZDelta);
 
 				FRotator NewRot;
-				if (bLeftSide == 0)
+				if (side == RIGHT)
 					NewRot = FRotator(0.0f, 90.0f, 0.0f);
 				else
 					NewRot = FRotator(0.0f, -90.0f, 0.0f);
@@ -66,13 +68,18 @@ void UArtilleryComponent::CreateArtillery()
 				FActorSpawnParameters SpawnParameters;
 				if (ACannon* NewCannon = World->SpawnActor<ACannon>(CannonType, NewLoc, NewRot, SpawnParameters))
 				{
-					NewCannon->bIsLeftSide = bLeftSide;
+					NewCannon->SetProjectile(ProjectileType);
+					NewCannon->SetLeftSide(side == LEFT ? true : false);
 					NewCannon->RandomStd = RandomStd;
 					NewCannon->AttachToActor(Cast<AActor>(ShipOwner), FAttachmentTransformRules::KeepRelativeTransform);
 					CannonArr.Add(NewCannon); 
 				}
 			}
 
+			if (side == LEFT)
+				side = RIGHT;
+			else
+				break;
 		}
 		
 
@@ -111,7 +118,7 @@ void UArtilleryComponent::FireAllCannons(UWorld* World, float CurrentTime)
 	// Firing all cannons on the appropriate side
 	for (int i = 0; i < CannonArr.Num(); i++)
 	{
-		if (CannonArr[i]->bIsLeftSide == bFireLeftSide)
+		if (CannonArr[i]->IsOnLeftSide() == bFireLeftSide)
 			CannonArr[i]->Fire(World);
 	}
 

@@ -24,14 +24,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Is this cannon on the left side?
-	bool bIsLeftSide;
-
 	// Spread when shooting
 	float RandomStd;
 
-	FORCEINLINE UArrowComponent* GetCannonDirection() { return CannonDirection; }
-	FORCEINLINE bool ProjectileIsPresent() { return Projectile; }
+	FORCEINLINE UArrowComponent* GetCannonDirection() const { return CannonDirection; }
+	FORCEINLINE bool ProjectileIsPresent() const { return Projectile; }
+	FORCEINLINE void SetProjectile(TSubclassOf<AActor> ProjectileType) { this->Projectile = ProjectileType; }
+	FORCEINLINE void SetLeftSide(bool bOnLeftSide) { this->bIsLeftSide = bOnLeftSide; }
+	FORCEINLINE bool IsOnLeftSide() { return bIsLeftSide; }
 	
 	void Fire(UWorld* World);
 	
@@ -48,6 +48,8 @@ private:
 	class UPaperSpriteComponent* CannonSprite;
 
 	// Projectile to spawn when firing.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cannon", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AActor> Projectile;
+
+	// Is this cannon on the left side?
+	bool bIsLeftSide;
 };

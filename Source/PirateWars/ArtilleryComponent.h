@@ -36,9 +36,13 @@ private:
 	// Ship Owner of the Artillery
 	class AAbstractShip* ShipOwner;
 
-	// Projectile to spawn when firing.
+	// Cannon type that will be spawned
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AActor> CannonType;
+
+	// Projectile to spawn when firing.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AActor> ProjectileType;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Artillery", meta = (AllowPrivateAccess = "true"))
 	TArray<ACannon*> CannonArr;
