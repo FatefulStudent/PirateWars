@@ -5,8 +5,6 @@
 #include "CoreMinimal.h"
 #include "AbstractShip.generated.h"
 
-UENUM()
-enum DEATH_STATUS { ALIVE, PENDING_KILL, DEAD };
 
 UCLASS(abstract)
 class PIRATEWARS_API AAbstractShip : public APawn
@@ -16,17 +14,17 @@ class PIRATEWARS_API AAbstractShip : public APawn
 		// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	// Whether ship wants to shoot or not
-	FORCEINLINE virtual bool Fire1Enabled() const { return true; }
+	FORCEINLINE virtual bool Fire1Enabled() const PURE_VIRTUAL(AAbstractShip::Fire1Enabled, return false;);
 
 	// Whether ship is alive or pending death
-	FORCEINLINE virtual DEATH_STATUS GetDeathStatus() const { return DEAD; }
+	FORCEINLINE virtual bool IsAlive() const PURE_VIRTUAL(AAbstractShip::IsAlive, return false;);
 
 	// Gets health in procents (for the HUD/UI)
-	FORCEINLINE virtual float GetHealthPct() const { return 0.0f; }
+	FORCEINLINE virtual float GetHealthPct() const PURE_VIRTUAL(AAbstractShip::GetHealthPct, return 0.0f;);
 
 	// Public method to damage the ship
-	FORCEINLINE virtual void ReceiveDamage(int DamageValue) {}
+	FORCEINLINE virtual void ReceiveDamage(int DamageValue) PURE_VIRTUAL(AAbstractShip::ReceiveDamage, ;);
 
 	// Get Aim Location
-	FORCEINLINE virtual bool IsLeftSideFiring() const { return true; }
+	FORCEINLINE virtual bool IsLeftSideFiring() const PURE_VIRTUAL(AAbstractShip::IsLeftSideFiring, return false;);
 };

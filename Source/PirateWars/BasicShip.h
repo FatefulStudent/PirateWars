@@ -61,7 +61,7 @@ public:
 	
 	// Whether ship is alive or pending death
 	UFUNCTION(BlueprintCallable, Category = "Ship")
-	FORCEINLINE DEATH_STATUS GetDeathStatus() const override { return DeathStatus; }
+	FORCEINLINE bool IsAlive() const override { return bIsAlive; }
 
 	// Gets health in percents (for the HUD/UI)
 	UFUNCTION(BlueprintCallable, Category = "Ship")
@@ -97,7 +97,7 @@ protected:
 	/*
 	 * PROPERTIES 
 	 */
-	DEATH_STATUS DeathStatus;
+	bool bIsAlive;
 
 	// Artillery to shoot with cannons
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))

@@ -85,7 +85,7 @@ void UArtilleryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (ShipOwner != nullptr && ShipOwner->GetDeathStatus() == ALIVE && CannonType)
+	if (ShipOwner != nullptr && ShipOwner->IsAlive() && CannonType != nullptr)
 	{
 		// Handle input.
 		bool bFire1 = ShipOwner->Fire1Enabled();

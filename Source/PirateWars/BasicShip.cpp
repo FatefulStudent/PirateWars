@@ -53,7 +53,7 @@ ABasicShip::ABasicShip()
 	
 	// General
 	MovementCollisionProfile = TEXT("BlockAll");
-	DeathStatus = ALIVE;
+	bIsAlive = 1;
 	MaxHealth = 100;
 	MoveSpeed = 100.0f;
 	BoxShape = FVector(45.0f, 20.0f, 100.0f);
@@ -118,7 +118,7 @@ void ABasicShip::MoveTheShip(float DeltaTime)
 // Decrease health by damaging the ship (can be overriden)
 void ABasicShip::ReceiveDamage(int DamageValue)
 {
-	if (DeathStatus == DEAD)
+	if (bIsAlive == false)
 		return;
 
 	if (DamageValue >= 0)
@@ -153,7 +153,7 @@ void ABasicShip::ReceiveDamage(int DamageValue)
 // Disable collisions and disappear after some time
 void ABasicShip::Die_Implementation()
 {
-	DeathStatus = DEAD;
+	bIsAlive = false;
 	UE_LOG(LogTemp, Warning, TEXT("%s: I DIEDED"), *(GetName()))
 	SetActorTickEnabled(false);
 	BoxCollider->SetCollisionProfileName("BlockAll");
@@ -177,9 +177,8 @@ void ABasicShip::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimit
 		if (AAbstractShip* OtherShip = Cast<AAbstractShip>(OtherActor))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%s: it was a ship"), *(GetName()))
-			if (OtherShip->GetDeathStatus() != DEAD && this->DeathStatus != DEAD)
+			if (OtherShip->IsAlive() && this->bIsAlive)
 			{
-				DeathStatus = PENDING_KILL;
 				ReceiveDamage(99999);
 				OtherShip->ReceiveDamage(99999);
 			}
