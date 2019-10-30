@@ -3,14 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/StaticMeshComponent.h"
-#include "GameFramework/PlayerController.h"
-#include "Engine/CollisionProfile.h"
-#include "Engine/StaticMesh.h"
-#include "Components/SphereComponent.h"
-#include "GameFramework/PawnMovementComponent.h"
-#include "GameFramework/FloatingPawnMovement.h"
-#include "GameFramework/PlayerInput.h"
 #include "AbstractShip.generated.h"
 
 

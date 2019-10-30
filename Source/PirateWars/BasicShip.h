@@ -4,23 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "Components/StaticMeshComponent.h"
-#include "GameFramework/PlayerController.h"
-#include "Engine/CollisionProfile.h"
-#include "Engine/StaticMesh.h"
-#include "Components/SphereComponent.h"
-#include "GameFramework/PawnMovementComponent.h"
-#include "GameFramework/FloatingPawnMovement.h"
-#include "GameFramework/PlayerInput.h"
+
 #include "GameFramework/Pawn.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 #include "ArtilleryComponent.h"
 #include "PaperSprite.h"
 #include "AbstractShip.h"
+
+#include "Engine/CollisionProfile.h"
+#include "UObject/ConstructorHelpers.h"
+
+#include "GameFramework/MovementComponent.h"
+
+#include "Engine/World.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/PawnMovementComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
+#include "GameFramework/PlayerInput.h"
+
 #include "BasicShip.generated.h"
-
-class UPawnMovementComponent;
-
 
 USTRUCT(BlueprintType)
 struct FInputAdapter
@@ -58,7 +61,6 @@ public:
 
 	/** Name of the MovementComponent.  Use this name if you want to use a different class (with ObjectInitializer.SetDefaultSubobjectClass). */
 	static FName MovementComponentName;
-
 	// Begin Pawn overrides
 	virtual UPawnMovementComponent* GetMovementComponent() const override;
 	virtual void UpdateNavigationRelevance() override;
@@ -116,32 +118,19 @@ protected:
 		UPawnMovementComponent* MovementComponent;
 
 public:
-	/** Name of the CollisionComponent. */
-	static FName CollisionComponentName;
-
-public:
 	/** DefaultPawn collision component */
 	UPROPERTY(Category = Pawn, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		USphereComponent* CollisionComponent;
-public:
-
-	/** Name of the MeshComponent. Use this name if you want to prevent creation of the component (with ObjectInitializer.DoNotCreateDefaultSubobject). */
-	static FName MeshComponentName;
+	UBoxComponent* CollisionComponent;
 
 public:
 	/** The mesh associated with this Pawn. */
 	UPROPERTY(Category = Pawn, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* MeshComponent;
+	UStaticMeshComponent* MeshComponent;
+
 public:
 
-	/** If true, adds default input bindings for movement and camera look. */
-	UPROPERTY(Category = Pawn, EditAnywhere, BlueprintReadOnly)
-		uint32 bAddDefaultMovementBindings : 1;
-
 	/** Returns CollisionComponent subobject **/
-	USphereComponent* GetCollisionComponent() const { return CollisionComponent; }
-	/** Returns MeshComponent subobject **/
-	UStaticMeshComponent* GetMeshComponent() const { return MeshComponent; }
+	UBoxComponent* GetCollisionComponent() const { return CollisionComponent; }
 
 
 protected:
@@ -222,10 +211,6 @@ protected:
 	// Array of availible sprites 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
 	TArray<UPaperSprite*> SpritesForTheShip;
-
-	// Box for collision calculations
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
-	UBoxComponent* BoxCollider;
 
 	// Box collider shape
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship", meta = (AllowPrivateAccess = "true"))
