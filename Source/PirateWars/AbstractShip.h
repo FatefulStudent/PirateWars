@@ -3,6 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/StaticMeshComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "Engine/CollisionProfile.h"
+#include "Engine/StaticMesh.h"
+#include "Components/SphereComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
+#include "GameFramework/PlayerInput.h"
 #include "AbstractShip.generated.h"
 
 
@@ -11,7 +19,6 @@ class PIRATEWARS_API AAbstractShip : public APawn
 {
 	GENERATED_BODY()
 
-		// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	// Whether ship wants to shoot or not
 	FORCEINLINE virtual bool Fire1Enabled() const PURE_VIRTUAL(AAbstractShip::Fire1Enabled, return false;);
