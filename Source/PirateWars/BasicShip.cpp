@@ -56,7 +56,7 @@ ABasicShip::ABasicShip()
 
 	RootComponent = CollisionComponent;
 
-	MovementComponent = CreateDefaultSubobject<UPawnMovementComponent, UFloatingPawnMovement>(ABasicShip::MovementComponentName);
+	MovementComponent = CreateDefaultSubobject<UPawnMovementComponent, UShipMovementComponent>(ABasicShip::MovementComponentName);  //UFloatingPawnMovement UShipMovementComponent
 	MovementComponent->UpdatedComponent = CollisionComponent;
 
 	Artillery = CreateDefaultSubobject<UArtilleryComponent>(TEXT("Artillery"));

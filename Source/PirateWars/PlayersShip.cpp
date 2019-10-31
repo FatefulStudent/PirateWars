@@ -8,8 +8,7 @@
 
 // Sets default values
 APlayersShip::APlayersShip()
-{
-}
+{}
 
 // Called when the game starts or when spawned
 void APlayersShip::BeginPlay()
