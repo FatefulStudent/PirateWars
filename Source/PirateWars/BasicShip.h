@@ -10,6 +10,7 @@
 #include "AbstractShip.h"
 
 #include "GameFramework/Pawn.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/MovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -95,12 +96,12 @@ protected:
 public:
 	/** DefaultPawn collision component */
 	UPROPERTY(Category = Pawn, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UBoxComponent* CollisionComponent;
+		UCapsuleComponent* CollisionComponent;
 
 public:
 
 	/** Returns CollisionComponent subobject **/
-	UBoxComponent* GetCollisionComponent() const { return CollisionComponent; }
+	UCapsuleComponent * GetCollisionComponent() const { return CollisionComponent; }
 
 
 protected:

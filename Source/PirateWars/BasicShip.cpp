@@ -44,8 +44,8 @@ ABasicShip::ABasicShip()
 
 	BoxShape = FVector(45.0f, 20.0f, 100.0f);
 
-	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
-	CollisionComponent->InitBoxExtent(BoxShape);
+	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent >(TEXT("Collision"));
+	CollisionComponent->InitCapsuleSize(30.0f, 50.0f);
 
 	CollisionComponent->CanCharacterStepUpOn = ECB_No;
 	//CollisionComponent->SetShouldUpdatePhysicsVolume(true); FIXME: weirdly affects movement - getting stuck in islands
@@ -174,7 +174,8 @@ void ABasicShip::Die_Implementation()
 	bIsAlive = false;
 	UE_LOG(LogTemp, Warning, TEXT("%s: I DIEDED"), *(GetName()))
 	SetActorTickEnabled(false);
-	CollisionComponent->SetCollisionProfileName("BlockAll");
+	MovementComponent->Deactivate();
+	// CollisionComponent->SetCollisionProfileName("BlockAll");
 	
 	// Get Out of the way
 	FVector Pos = GetActorLocation();
