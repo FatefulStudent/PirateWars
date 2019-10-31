@@ -267,7 +267,7 @@ void ABasicShip::MoveForward(float Val)
 	{
 		if (Controller)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Tring go frwrd"))
+			// UE_LOG(LogTemp, Warning, TEXT("Tring go frwrd"))
 			Val *= -1;
 			FRotator const ControlSpaceRot = Controller->GetControlRotation();
 			/*auto DesiredRotation = Controller->GetDesiredRotation();

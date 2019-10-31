@@ -22,5 +22,17 @@ UCLASS(ClassGroup = Movement, meta = (BlueprintSpawnableComponent))
 class PIRATEWARS_API UShipMovementComponent : public UFloatingPawnMovement
 {
 	GENERATED_BODY()
+
+public:
+	UShipMovementComponent();
+
+	//Begin UActorComponent Interface
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+	//End UActorComponent Interface
+
+	/** Update Velocity based on input. Also applies gravity. */
+	virtual void ApplyControlInputToVelocity(float DeltaTime) override;
+
+
 };
 
