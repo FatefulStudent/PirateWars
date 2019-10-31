@@ -55,7 +55,7 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	CapsuleCollider->SetCapsuleSize(Radius, 200.0f);
+	CapsuleCollider->SetCapsuleSize(Radius, 25.0f);
 	CapsuleCollider->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
 	
 	FTimerHandle DummyTimerHandle;

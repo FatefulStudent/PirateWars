@@ -8,7 +8,9 @@
 
 // Sets default values
 APlayersShip::APlayersShip()
-{}
+{
+	CollisionComponent->SetCollisionProfileName(TEXT("PlayerShipMoving"));
+}
 
 // Called when the game starts or when spawned
 void APlayersShip::BeginPlay()

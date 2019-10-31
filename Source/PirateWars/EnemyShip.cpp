@@ -2,3 +2,8 @@
 
 
 #include "EnemyShip.h"
+
+AEnemyShip::AEnemyShip()
+{
+	CollisionComponent->SetCollisionProfileName("EnemyShipMoving");
+}

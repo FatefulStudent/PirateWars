@@ -32,10 +32,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	class UCapsuleComponent* CapsuleCollider;
 
-	// Describes what this missile hits
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
-	FName MovementCollisionProfile;
-
 	// Speed of the projectile
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	float Speed;

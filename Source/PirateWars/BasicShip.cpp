@@ -50,7 +50,7 @@ ABasicShip::ABasicShip()
 	CollisionComponent->CanCharacterStepUpOn = ECB_No;
 	//CollisionComponent->SetShouldUpdatePhysicsVolume(true); FIXME: weirdly affects movement - getting stuck in islands
 	CollisionComponent->SetCanEverAffectNavigation(false);
-	CollisionComponent->bDynamicObstacle = true;
+	CollisionComponent->bDynamicObstacle = false;
 	CollisionComponent->SetGenerateOverlapEvents(true);
 	CollisionComponent->SetNotifyRigidBodyCollision(true);
 
@@ -76,7 +76,6 @@ ABasicShip::ABasicShip()
 	MaxHealth = 100;
 	MoveSpeed = 150.0f;
 
-	CollisionComponent->SetCollisionProfileName(MovementCollisionProfile);
 	CollisionComponent->OnComponentHit.AddDynamic(this, &ABasicShip::OnHit);
 }
 
@@ -89,8 +88,6 @@ void ABasicShip::BeginPlay()
 	Artillery->SetCannonNum(CannonNum);
 	Artillery->SetRandomStd(RandomStd);
 	Artillery->SetCannonNum(Fire1Cooldown);
-
-
 }
 
 // Called every frame
