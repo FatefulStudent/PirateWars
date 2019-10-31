@@ -3,25 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/StaticMeshComponent.h"
 
-#include "GameFramework/Pawn.h"
-#include "Components/ArrowComponent.h"
-#include "Components/BoxComponent.h"
+#include "ShipMovementComponent.h"
 #include "ArtilleryComponent.h"
 #include "PaperSprite.h"
 #include "AbstractShip.h"
 
-#include "Engine/CollisionProfile.h"
-#include "UObject/ConstructorHelpers.h"
-
+#include "GameFramework/Pawn.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/MovementComponent.h"
-
-#include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
-#include "GameFramework/PlayerInput.h"
 
 #include "BasicShip.generated.h"
 
@@ -72,7 +65,7 @@ public:
 	* @see APawn::AddMovementInput()
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
-		virtual void MoveForward(float Val);
+	virtual void MoveForward(float Val);
 
 	/**
 	* Input callback to strafe right in local space (or left if Val is negative).
@@ -80,52 +73,29 @@ public:
 	* @see APawn::AddMovementInput()
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
-		virtual void MoveRight(float Val);
-
-	/**
-	* Input callback to move up in world space (or down if Val is negative).
-	* @param Val Amount of movement in the world up direction (or down if negative).
-	* @see APawn::AddMovementInput()
-	*/
-	UFUNCTION(BlueprintCallable, Category = "Pawn")
-		virtual void MoveUp_World(float Val);
+	virtual void MoveRight(float Val);
 
 	/**
 	* Called via input to turn at a given rate.
 	* @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
-		virtual void TurnAtRate(float Rate);
-
-	/**
-	* Called via input to look up at a given rate (or down if Rate is negative).
-	* @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	*/
-	UFUNCTION(BlueprintCallable, Category = "Pawn")
-		virtual void LookUpAtRate(float Rate);
+	virtual void TurnAtRate(float Rate);
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pawn")
-		float BaseTurnRate;
+	float BaseTurnRate;
 
-	/** Base lookup rate, in deg/sec. Other scaling may affect final lookup rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pawn")
-		float BaseLookUpRate;
 
 protected:
 	/** DefaultPawn movement component */
 	UPROPERTY(Category = Pawn, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		UPawnMovementComponent* MovementComponent;
+	UPawnMovementComponent* MovementComponent;
 
 public:
 	/** DefaultPawn collision component */
 	UPROPERTY(Category = Pawn, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* CollisionComponent;
-
-public:
-	/** The mesh associated with this Pawn. */
-	UPROPERTY(Category = Pawn, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* MeshComponent;
 
 public:
 

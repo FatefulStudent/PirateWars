@@ -35,10 +35,7 @@ void FInputAdapter::Fire1(bool bPressed)
 ABasicShip::ABasicShip()
 {
 	bCanBeDamaged = true;
-	MeshComponent = nullptr;
-
 	BaseTurnRate = 45.f;
-	BaseLookUpRate = 45.f;
 
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -51,7 +48,7 @@ ABasicShip::ABasicShip()
 	CollisionComponent->InitBoxExtent(BoxShape);
 
 	CollisionComponent->CanCharacterStepUpOn = ECB_No;
-	//CollisionComponent->SetShouldUpdatePhysicsVolume(true);
+	//CollisionComponent->SetShouldUpdatePhysicsVolume(true); FIXME: weirdly affects movement - getting stuck in islands
 	CollisionComponent->SetCanEverAffectNavigation(false);
 	CollisionComponent->bDynamicObstacle = true;
 	CollisionComponent->SetGenerateOverlapEvents(true);
@@ -270,19 +267,14 @@ void ABasicShip::MoveForward(float Val)
 	{
 		if (Controller)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Tring go frwrd"))
+			Val *= -1;
 			FRotator const ControlSpaceRot = Controller->GetControlRotation();
-
+			/*auto DesiredRotation = Controller->GetDesiredRotation();
+			SetActorRotation(DesiredRotation);*/
 			// transform to world space and add it
 			AddMovementInput(FRotationMatrix(ControlSpaceRot).GetScaledAxis(EAxis::X), Val);
 		}
-	}
-}
-
-void ABasicShip::MoveUp_World(float Val)
-{
-	if (Val != 0.f)
-	{
-		AddMovementInput(FVector::UpVector, Val);
 	}
 }
 
@@ -290,12 +282,6 @@ void ABasicShip::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds() * CustomTimeDilation);
-}
-
-void ABasicShip::LookUpAtRate(float Rate)
-{
-	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds() * CustomTimeDilation);
 }
 
 UPawnMovementComponent* ABasicShip::GetMovementComponent() const

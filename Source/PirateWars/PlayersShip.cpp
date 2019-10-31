@@ -27,8 +27,8 @@ void APlayersShip::Tick(float DeltaTime)
 void APlayersShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAxis("MoveX", this, &APlayersShip::MoveX);
-	PlayerInputComponent->BindAxis("MoveY", this, &APlayersShip::MoveY);
+	PlayerInputComponent->BindAxis("MoveX", this, &APlayersShip::MoveRight);
+	PlayerInputComponent->BindAxis("MoveY", this, &APlayersShip::MoveForward);
 
 	PlayerInputComponent->BindAction("Fire1", EInputEvent::IE_Pressed, this, &APlayersShip::Fire1Pressed);
 	PlayerInputComponent->BindAction("Fire1", EInputEvent::IE_Released, this, &APlayersShip::Fire1Released);
